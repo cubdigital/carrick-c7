@@ -1,0 +1,10 @@
+---
+alwaysApply: true
+---
+
+This project is using webflow with c7 integration. No nextjs.
+Update code base on my request and I'll need to copy paste it to webflow
+I don't have access to c7
+The site branch url is: https://carrick-6a9492.webflow.io/profile
+all routes under /profile is under c7. eg. /profile/account
+I have to use css and js to make the ui match my design
