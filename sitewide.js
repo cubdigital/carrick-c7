@@ -799,6 +799,253 @@
       });
     }
 
+    function getSubpageHeading(block) {
+      return (
+        block.querySelector(':scope > h2') ||
+        block.querySelector(':scope > .carrick-page-intro > h2')
+      );
+    }
+
+    function wrapAccountSubpageIntro(block, includeAddRow) {
+      const heading = getSubpageHeading(block);
+      if (!heading) return;
+
+      let intro = block.querySelector(':scope > .carrick-page-intro');
+      if (!intro) {
+        intro = document.createElement('div');
+        intro.className = 'carrick-page-intro';
+        block.insertBefore(intro, heading);
+      }
+
+      if (heading.parentElement !== intro) {
+        intro.appendChild(heading);
+      }
+
+      const addRow = block.querySelector(':scope > .c7-account-row--add');
+      if (includeAddRow && addRow) {
+        if (addRow.parentElement !== intro) {
+          intro.appendChild(addRow);
+        }
+      } else if (addRow && addRow.parentElement === intro) {
+        block.appendChild(addRow);
+      }
+    }
+
+    function structureAddressBookTile(tile) {
+      if (tile.dataset.carrickListTileReady === 'true') return;
+      if (tile.querySelector(':scope > .carrick-tile-row')) {
+        tile.dataset.carrickListTileReady = 'true';
+        return;
+      }
+
+      const link = tile.querySelector('a[class*="button"], button[class*="button"]');
+      const strong = tile.querySelector(':scope > strong');
+      if (!link || !strong) return;
+
+      const row = document.createElement('div');
+      row.className = 'carrick-tile-row';
+      row.appendChild(strong);
+      row.appendChild(link);
+      setEditLabel(link);
+
+      const details = document.createElement('div');
+      details.className = 'carrick-list-tile__details';
+
+      [...tile.childNodes].forEach((node) => {
+        if (node === strong || node === link) return;
+        if (node.nodeType === Node.ELEMENT_NODE && node.tagName === 'BR') return;
+        if (node.nodeType === Node.TEXT_NODE && !node.textContent.trim()) return;
+        details.appendChild(node);
+      });
+
+      tile.textContent = '';
+      tile.appendChild(row);
+      if (details.childNodes.length) {
+        tile.appendChild(details);
+      }
+      tile.dataset.carrickListTileReady = 'true';
+    }
+
+    function buildCreditCardRow(nodes, link) {
+      const row = document.createElement('div');
+      row.className = 'carrick-tile-row carrick-tile-row--credit';
+
+      const body = document.createElement('div');
+      body.className = 'carrick-credit-card__body';
+
+      const brand = document.createElement('div');
+      brand.className = 'carrick-credit-card__brand';
+
+      const details = document.createElement('div');
+      details.className = 'carrick-credit-card__details';
+
+      nodes.forEach((node) => {
+        if (node.nodeType === Node.ELEMENT_NODE && node.tagName === 'IMG') {
+          brand.appendChild(node);
+          return;
+        }
+
+        if (
+          node.nodeType === Node.ELEMENT_NODE &&
+          /^(STRONG|SPAN)$/i.test(node.tagName) &&
+          /visa|mastercard|amex|discover/i.test(node.textContent || '')
+        ) {
+          brand.appendChild(node);
+          return;
+        }
+
+        details.appendChild(node);
+      });
+
+      formatCreditCardDetailsText(details);
+
+      if (brand.childNodes.length) body.appendChild(brand);
+      if (details.childNodes.length) body.appendChild(details);
+
+      row.appendChild(body);
+      row.appendChild(link);
+      return row;
+    }
+
+    function structureCreditCardListTile(tile) {
+      if (tile.dataset.carrickListTileReady === 'true') return;
+      if (tile.querySelector(':scope .carrick-tile-row--credit')) {
+        tile.dataset.carrickListTileReady = 'true';
+        return;
+      }
+
+      const link = tile.querySelector('a[class*="button"], button[class*="button"]');
+      if (!link) return;
+
+      const nodes = [...tile.childNodes].filter(
+        (node) =>
+          node !== link &&
+          (node.nodeType === Node.ELEMENT_NODE ||
+            (node.nodeType === Node.TEXT_NODE && node.textContent.trim())),
+      );
+
+      tile.textContent = '';
+      tile.appendChild(buildCreditCardRow(nodes, link));
+      setEditLabel(link);
+      tile.classList.add('carrick-credit-card-tile');
+      tile.dataset.carrickListTileReady = 'true';
+    }
+
+    function setSubpageAddLabel(link, label) {
+      if (!link) return;
+      link.classList.add('carrick-subpage-add');
+      if (link.textContent.trim().toUpperCase() !== label) {
+        link.textContent = label;
+      }
+    }
+
+    function structureClubsPage() {
+      const block = document.querySelector('.c7-account__clubs');
+      if (!block) return;
+
+      const heading = getSubpageHeading(block);
+      const isClubsPage =
+        heading && /^\s*club memberships\s*$/i.test(heading.textContent || '');
+
+      if (!isClubsPage) {
+        block.classList.remove(
+          'carrick-account-subpage',
+          'carrick-clubs-page',
+          'carrick-clubs-page--empty',
+        );
+        block.querySelector(':scope > .c7-account__dashboard__message.carrick-clubs-empty')?.remove();
+        return;
+      }
+
+      block.classList.add('carrick-account-subpage', 'carrick-clubs-page');
+
+      const membershipRows = [
+        ...block.querySelectorAll(':scope > .c7-account-row:not(.c7-account-row--add)'),
+      ];
+      const hasMemberships = membershipRows.some((row) => row.querySelector('.c7-account-tile'));
+
+      wrapAccountSubpageIntro(block, hasMemberships);
+
+      const addRow = block.querySelector(':scope > .c7-account-row--add');
+      const addLink = addRow?.querySelector('a[class*="button"], button[class*="button"]');
+
+      if (!hasMemberships) {
+        block.classList.add('carrick-clubs-page--empty');
+
+        let message = block.querySelector(':scope > .c7-account__dashboard__message.carrick-clubs-empty');
+        if (!message) {
+          message = document.createElement('div');
+          message.className = 'c7-account__dashboard__message carrick-clubs-empty';
+          const copy = document.createElement('p');
+          copy.textContent = 'Join one of our exclusive experience club benefits today.';
+          message.appendChild(copy);
+          block.appendChild(message);
+        }
+
+        let joinLink = message.querySelector(':scope > a.carrick-clubs-join');
+        if (!joinLink) {
+          joinLink = addLink ? addLink.cloneNode(true) : document.createElement('a');
+          joinLink.className = 'c7-button carrick-clubs-join';
+          if (!joinLink.getAttribute('href') && addLink?.getAttribute('href')) {
+            joinLink.href = addLink.getAttribute('href');
+          }
+          message.appendChild(joinLink);
+        }
+
+        joinLink.textContent = 'VIEW & JOIN CLUB MEMBERSHIP';
+      } else {
+        block.classList.remove('carrick-clubs-page--empty');
+        block.querySelector(':scope > .c7-account__dashboard__message.carrick-clubs-empty')?.remove();
+        setSubpageAddLabel(addLink, 'ADD A NEW CLUB MEMBERSHIP');
+      }
+    }
+
+    function structureAddressBookPage() {
+      const block = document.querySelector('.c7-account__address-book');
+      if (!block) return;
+
+      const heading = getSubpageHeading(block);
+      const isAddressBook =
+        heading && /^\s*address book\s*$/i.test(heading.textContent || '');
+
+      if (!isAddressBook) {
+        block.classList.remove('carrick-account-subpage', 'carrick-address-book-page');
+        return;
+      }
+
+      block.classList.add('carrick-account-subpage', 'carrick-address-book-page');
+      wrapAccountSubpageIntro(block, true);
+
+      const addLink = block.querySelector(
+        ':scope .c7-account-row--add a[class*="button"], :scope .c7-account-row--add button[class*="button"]',
+      );
+      setSubpageAddLabel(addLink, 'ADD A NEW ADDRESS');
+      block.querySelectorAll('.c7-account-tile').forEach(structureAddressBookTile);
+    }
+
+    function structureCreditCardsPage() {
+      const block = document.querySelector('.c7-account__credit-cards');
+      if (!block) return;
+
+      const heading = getSubpageHeading(block);
+      const isCreditCardsPage =
+        heading && /^\s*credit cards\s*$/i.test(heading.textContent || '');
+
+      if (!isCreditCardsPage) {
+        block.classList.remove('carrick-account-subpage', 'carrick-credit-cards-page');
+        return;
+      }
+
+      block.classList.add('carrick-account-subpage', 'carrick-credit-cards-page');
+      wrapAccountSubpageIntro(block, true);
+
+      const addLink = block.querySelector(
+        ':scope .c7-account-row--add a[class*="button"], :scope .c7-account-row--add button[class*="button"]',
+      );
+      setSubpageAddLabel(addLink, 'ADD A NEW CARD');
+      block.querySelectorAll('.c7-account-tile').forEach(structureCreditCardListTile);
+    }
+
     function structureOrderHistoryPage() {
       const block = document.querySelector('.c7-account__order-history');
       if (!block) return;
@@ -953,6 +1200,9 @@
     function run() {
       wrapCarrickAccountHeader();
       wrapCarrickDashboardIntro();
+      structureClubsPage();
+      structureAddressBookPage();
+      structureCreditCardsPage();
       structureOrderHistoryPage();
       structureAccountInformationPage();
       wrapAccountTileActionRows();

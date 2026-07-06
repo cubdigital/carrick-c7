@@ -24,7 +24,6 @@ Assets live in this repo and are served to Webflow via **jsDelivr** (GitHub CDN)
 - **Branch:** `main`
 
 ### Webflow Site Settings → Custom Code
-
 **Head:**
 ```html
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/cubdigital/carrick-c7@main/sitewide.css">

@@ -1,89 +1,68 @@
 # Carrick Webflow assets
 
-CSS and JavaScript for the Carrick Webflow site (Commerce7 `/profile` integration). Edit files here, push to GitHub, and Webflow loads them from a CDN — no copy-paste on every change.
+CSS and JavaScript for the Carrick Webflow site (Commerce7 `/profile` integration). Edit files here, push to GitHub, and Webflow loads them from jsDelivr — no copy-paste on every change.
+
+**Repo:** [https://github.com/cubdigital/carrick-c7.git](https://github.com/cubdigital/carrick-c7.git)
 
 ## Files
 
-| File | Purpose |
-|------|---------|
-| `sitewide.css` | Site-wide styles (profile/login, C7 overrides) |
-| `sitewide.js` | Site-wide scripts (age gate, profile layout) — generated from `site-wide-footer.html` |
-| `site-wide-footer.html` | Source/reference for footer scripts (edit this, then regenerate `sitewide.js`) |
-| `profile-head.html` | Profile page head snippet (paste in Webflow page settings if needed) |
-| `profile-before-body.html` | Profile page before-`</body>` snippet |
 
-## Regenerate `sitewide.js`
+| File               | Scope                                                                 | Loaded from                          |
+| ------------------ | --------------------------------------------------------------------- | ------------------------------------ |
+| `sitewide.css`     | Site-wide C7 overrides (login, profile, shared layout)                | Site Settings → Custom Code → Head   |
+| `sitewide.js`      | Site-wide behaviour (age gate, profile/login DOM wrappers, observers) | Site Settings → Custom Code → Footer |
+| `profile-head.css` | `/profile` dashboard-only styles                                      | `/profile` page → Custom Code → Head |
 
-After editing `site-wide-footer.html`, extract the inline scripts:
-
-```bash
-python3 - <<'PY'
-from pathlib import Path
-import re
-html = Path('site-wide-footer.html').read_text()
-blocks = [m.group(1).strip() for m in re.finditer(
-    r'<script(?![^>]*\bsrc=)[^>]*>(.*?)</script>', html, re.DOTALL | re.IGNORECASE)]
-Path('sitewide.js').write_text('\n\n'.join(blocks) + '\n')
-PY
-```
-
-## GitHub setup (one time)
-
-1. Create a **public** repo on GitHub (e.g. `carrick-webflow-assets`).
-2. Push this folder:
-
-```bash
-git init
-git add .
-git commit -m "Add Carrick Webflow sitewide assets"
-git branch -M main
-git remote add origin https://github.com/YOUR_USERNAME/carrick-webflow-assets.git
-git push -u origin main
-```
-
-3. Optional: enable **GitHub Pages** (Settings → Pages → Deploy from branch `main` / root).
 
 ## Webflow custom code
 
-Replace `YOUR_USERNAME` and `REPO_NAME` with your GitHub repo. **jsDelivr** is recommended — it serves public GitHub repos as a CDN with no extra setup.
-
-### Site Settings → Custom Code → **Head**
+### Site Settings → Head
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/YOUR_USERNAME/REPO_NAME@main/sitewide.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/cubdigital/carrick-c7@main/sitewide.css">
 ```
 
-### Site Settings → Custom Code → **Footer**
-
-Keep the Commerce7 loader, then load your scripts:
+### Site Settings → Footer
 
 ```html
 <script defer type="text/javascript" src="https://cdn.commerce7.com/beta/commerce7.js" id="c7-javascript" data-tenant="carrick-winery"></script>
-<script defer src="https://cdn.jsdelivr.net/gh/YOUR_USERNAME/REPO_NAME@main/sitewide.js"></script>
+<script defer src="https://cdn.jsdelivr.net/gh/cubdigital/carrick-c7@main/sitewide.js"></script>
 ```
 
-### GitHub Pages URLs (alternative)
-
-If you enable GitHub Pages:
+### `/profile` page → Head
 
 ```html
-<link rel="stylesheet" href="https://YOUR_USERNAME.github.io/REPO_NAME/sitewide.css">
-<script defer src="https://YOUR_USERNAME.github.io/REPO_NAME/sitewide.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/cubdigital/carrick-c7@main/profile-head.css">
 ```
 
 ## Workflow
 
-1. Edit `sitewide.css` and/or `site-wide-footer.html` locally.
-2. Regenerate `sitewide.js` if you changed the footer HTML.
-3. Commit and push to `main`.
-4. Webflow picks up changes after jsDelivr cache refreshes (usually within minutes). For an immediate update, pin to a commit hash instead of `@main`:
+1. Edit the relevant `.css` or `.js` file.
+2. Commit and push to `main`.
+3. Webflow picks up changes after jsDelivr refreshes its cache for branch URLs (up to ~12 hours).
 
-```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/YOUR_USERNAME/REPO_NAME@abc1234/sitewide.css">
+## Faster deploys (optional)
+
+`@main` branch URLs cache for up to 12 hours. For immediate updates without changing Webflow URLs, use semver tags and `@latest`:
+
+```bash
+git push origin main
+git tag v1.0.3
+git push origin v1.0.3
+```
+
+Then purge after each release — open these URLs in a browser and confirm `{"status":"finished"}`:
+
+```
+https://purge.jsdelivr.net/gh/cubdigital/carrick-c7@latest/sitewide.css
+https://purge.jsdelivr.net/gh/cubdigital/carrick-c7@latest/sitewide.js
+https://purge.jsdelivr.net/gh/cubdigital/carrick-c7@latest/profile-head.css
 ```
 
 ## Notes
 
-- Webflow cannot “import” a file URL into the designer UI — you paste the `<link>` / `<script src>` tags once in Site Settings; updates flow from GitHub after push.
-- Do not use `raw.githubusercontent.com` in production; caching and MIME types are unreliable.
-- Profile-only snippets (`profile-head.html`, `profile-before-body.html`) stay as page-level embeds unless you also host them and link by URL.
+- Paste the `<link>` and `<script src>` tags once in Webflow; updates flow from GitHub after push.
+- Do not use `raw.githubusercontent.com` in production — caching and MIME types are unreliable.
+- C7 swaps views client-side; scripts use `MutationObserver` to survive DOM re-renders.
+- Scope styles with `body:has(.c7-…)` selectors so rules apply after C7 injects markup.
+
