@@ -8,3 +8,6 @@ I don't have access to c7
 The site branch url is: https://carrick-6a9492.webflow.io/profile
 all routes under /profile is under c7. eg. /profile/account
 I have to use css and js to make the ui match my design
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/cubdigital/carrick-c7@main/sitewide.css">
+
+https://github.com/cubdigital/carrick-c7.git
