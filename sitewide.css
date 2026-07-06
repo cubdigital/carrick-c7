@@ -755,6 +755,121 @@ body:has(.c7-account__information)
 }
 
 /* ========================================
+   /profile/order-history — C7 Order History
+   Carrick 3-column layout
+  ======================================== */
+
+body:has(.carrick-order-history-page) #c7-content .c7-account__order-history {
+  grid-column: 1 / -1 !important;
+  max-width: none !important;
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  column-gap: 20px !important;
+  row-gap: 20px !important;
+  align-items: start !important;
+}
+
+body:has(.carrick-order-history-page) #c7-content .c7-account__order-history > h2 {
+  grid-column: 1 / 2 !important;
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 0 0 20px !important;
+  border-bottom: 1px solid rgba(52, 31, 36, 0.45) !important;
+  color: #ab8d3f !important;
+  font-family: "Antic Didone", Georgia, serif !important;
+  font-size: clamp(2rem, 4vw, 36px) !important;
+  font-weight: 400 !important;
+  line-height: 1 !important;
+  text-transform: uppercase !important;
+}
+
+body:has(.carrick-order-history-page)
+  #c7-content
+  .c7-account__order-history
+  > .c7-account__dashboard__message {
+  grid-column: 2 / 4 !important;
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 20px !important;
+  border: 1px solid rgba(106, 94, 77, 0.72) !important;
+  background-color: transparent !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  gap: 20px !important;
+}
+
+body:has(.carrick-order-history-page)
+  #c7-content
+  .c7-account__order-history
+  > .c7-account__dashboard__message
+  p {
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  font-size: 0.875rem !important;
+  line-height: 1.5 !important;
+}
+
+body:has(.carrick-order-history-page)
+  #c7-content
+  .carrick-order-history-shop {
+  width: auto !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+  padding: 0.75rem 1.5rem !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border: 1px solid #ab8d3f !important;
+  border-color: #ab8d3f !important;
+  background-color: #ab8d3f !important;
+  color: #ffffff !important;
+  font-family: "Albert Sans", Arial, sans-serif !important;
+  font-size: 0.6875rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.06em !important;
+  text-transform: uppercase !important;
+  text-decoration: none !important;
+  cursor: pointer !important;
+  box-shadow: none !important;
+}
+
+body:has(.carrick-order-history-page)
+  #c7-content
+  .carrick-order-history-shop:hover {
+  border-color: #341f24 !important;
+  background-color: #341f24 !important;
+  color: #ffffff !important;
+}
+
+body:has(.carrick-order-history-page)
+  #c7-content
+  .c7-account__order-history
+  > .c7-account__order,
+body:has(.carrick-order-history-page)
+  #c7-content
+  .c7-account__order-history
+  > .c7-pagination {
+  grid-column: 2 / 4 !important;
+  width: 100% !important;
+}
+
+body:has(.carrick-order-history-page)
+  #c7-content
+  .c7-account__order-history
+  > .c7-account__order {
+  margin: 0 !important;
+  padding: 20px !important;
+  border: 1px solid rgba(106, 94, 77, 0.72) !important;
+  background-color: transparent !important;
+}
+
+/* ========================================
      /profile — C7 Account Dashboard
      Carrick 3-column layout
   ======================================== */
@@ -1110,7 +1225,29 @@ body:has(.c7-account__dashboard)
   }
   body:has(.c7-account-menu) #c7-content .carrick-account-header,
   body:has(.c7-account__dashboard) #c7-content .c7-account__dashboard,
-  body:has(.c7-account__information) #c7-content .c7-account__information {
+  body:has(.c7-account__information) #c7-content .c7-account__information,
+  body:has(.carrick-order-history-page) #c7-content .c7-account__order-history {
+    grid-column: 1 / -1 !important;
+  }
+  body:has(.carrick-order-history-page) #c7-content .c7-account__order-history {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+  body:has(.carrick-order-history-page)
+    #c7-content
+    .c7-account__order-history
+    > h2,
+  body:has(.carrick-order-history-page)
+    #c7-content
+    .c7-account__order-history
+    > .c7-account__dashboard__message,
+  body:has(.carrick-order-history-page)
+    #c7-content
+    .c7-account__order-history
+    > .c7-account__order,
+  body:has(.carrick-order-history-page)
+    #c7-content
+    .c7-account__order-history
+    > .c7-pagination {
     grid-column: 1 / -1 !important;
   }
   body:has(.c7-account__information) #c7-content .c7-account__information {
@@ -1184,7 +1321,8 @@ body:has(.c7-account__dashboard)
   body:has(.c7-account-menu) #c7-content > section,
   body:has(.c7-account__dashboard) #c7-content .c7-account__dashboard,
   body:has(.c7-account__dashboard) #c7-content .c7-account-row,
-  body:has(.c7-account__information) #c7-content .c7-account__information {
+  body:has(.c7-account__information) #c7-content .c7-account__information,
+  body:has(.carrick-order-history-page) #c7-content .c7-account__order-history {
     grid-template-columns: 1fr !important;
   }
   body:has(.c7-account-menu)

@@ -799,6 +799,37 @@
       });
     }
 
+    function structureOrderHistoryPage() {
+      const block = document.querySelector('.c7-account__order-history');
+      if (!block) return;
+
+      const heading = block.querySelector(':scope > h2');
+      const isOrderHistory =
+        heading && /^\s*order history\s*$/i.test(heading.textContent || '');
+
+      if (!isOrderHistory) {
+        delete block.dataset.carrickOrderHistoryReady;
+        block.classList.remove('carrick-order-history-page');
+        return;
+      }
+
+      block.classList.add('carrick-order-history-page');
+
+      const message = block.querySelector(':scope > .c7-account__dashboard__message');
+      if (!message) return;
+
+      let shopLink = message.querySelector(':scope > a.carrick-order-history-shop');
+      if (!shopLink) {
+        shopLink = document.createElement('a');
+        shopLink.href = '/shop';
+        shopLink.className = 'c7-button carrick-order-history-shop';
+        shopLink.textContent = 'VIEW SHOP';
+        message.appendChild(shopLink);
+      }
+
+      block.dataset.carrickOrderHistoryReady = 'true';
+    }
+
     function structureAccountInformationPage() {
       const block = document.querySelector('.c7-account__information');
       if (!block) return;
@@ -922,6 +953,7 @@
     function run() {
       wrapCarrickAccountHeader();
       wrapCarrickDashboardIntro();
+      structureOrderHistoryPage();
       structureAccountInformationPage();
       wrapAccountTileActionRows();
       markClubJoinButton();
