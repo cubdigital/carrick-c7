@@ -1,0 +1,539 @@
+<style>
+    /* ========================================
+       /profile — C7 Account Dashboard
+       Carrick 3-column layout
+    ======================================== */
+    body:has(.c7-account__dashboard) .section._90vh {
+      height: auto !important;
+      min-height: 0 !important;
+    }
+
+    body:has(.c7-account__dashboard) .container-hero.w-container {
+      max-width: 1440px !important;
+      width: 100% !important;
+      height: auto !important;
+      min-height: 0 !important;
+      max-height: none !important;
+      padding-left: 20px !important;
+      padding-right: 20px !important;
+      padding-top: 0 !important;
+      display: block !important;
+      align-items: flex-start !important;
+      justify-content: flex-start !important;
+    }
+  
+    body:has(.c7-account__dashboard) {
+      background-color: #e7e2d6 !important;
+      color: #341f24 !important;
+      font-family: "Albert Sans", Arial, sans-serif !important;
+    }
+  
+    body:has(.c7-account__dashboard) .codeembed.w-embed,
+    body:has(.c7-account__dashboard) #c7-content {
+      width: 100% !important;
+    }
+  
+    body:has(.c7-account__dashboard) #c7-content .carrick-tile-row {
+      width: 100% !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+      gap: 12px !important;
+    }
+
+    body:has(.c7-account__dashboard) #c7-content .carrick-profile-details + .carrick-tile-row--password {
+      margin-top: 20px !important;
+    }
+
+    body:has(.c7-account__dashboard) #c7-content .carrick-profile-details {
+      margin: 0 !important;
+      padding: 0 !important;
+      font-size: 0.875rem !important;
+      line-height: 1.8 !important;
+    }
+
+    body:has(.c7-account__dashboard) #c7-content .carrick-tile-row__content {
+      flex: 1 1 auto !important;
+      min-width: 0 !important;
+      display: flex !important;
+      flex-wrap: wrap !important;
+      align-items: center !important;
+      gap: 8px 12px !important;
+    }
+
+    body:has(.c7-account__dashboard) #c7-content .carrick-tile-row__content img {
+      display: block !important;
+      height: auto !important;
+      max-height: 24px !important;
+      width: auto !important;
+    }
+
+    body:has(.c7-account__dashboard) #c7-content .carrick-tile-row--credit {
+      align-items: flex-start !important;
+    }
+
+    body:has(.c7-account__dashboard) #c7-content .carrick-credit-card__body {
+      flex: 1 1 auto !important;
+      min-width: 0 !important;
+      display: flex !important;
+      align-items: flex-start !important;
+      gap: 10px !important;
+    }
+
+    body:has(.c7-account__dashboard) #c7-content .carrick-credit-card__brand {
+      flex: 0 0 auto !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      padding: 4px 8px !important;
+      border: 1px solid rgba(106, 94, 77, 0.72) !important;
+    }
+
+    body:has(.c7-account__dashboard) #c7-content .carrick-credit-card__brand img {
+      display: block !important;
+      height: auto !important;
+      max-height: 16px !important;
+      width: auto !important;
+    }
+
+    body:has(.c7-account__dashboard) #c7-content .carrick-credit-card__details {
+      flex: 1 1 auto !important;
+      min-width: 0 !important;
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 0 !important;
+      font-size: 0.875rem !important;
+      line-height: 1.8 !important;
+    }
+
+    body:has(.c7-account__dashboard) #c7-content .carrick-credit-card__line {
+      display: block !important;
+    }
+
+    body:has(.c7-account__dashboard) #c7-content .carrick-credit-card__details em {
+      color: rgba(52, 31, 36, 0.72) !important;
+      font-style: italic !important;
+    }
+  
+    body:has(.c7-account__dashboard) #c7-content {
+      width: 100% !important;
+      max-width: 1440px !important;
+      min-height: 700px !important;
+      margin: 0 auto !important;
+      padding: 120px 20px !important;
+      display: block !important;
+      box-sizing: border-box !important;
+    }
+  
+    body:has(.c7-account__dashboard) #c7-content *,
+    body:has(.c7-account__dashboard) #c7-content *::before,
+    body:has(.c7-account__dashboard) #c7-content *::after {
+      box-sizing: border-box !important;
+    }
+  
+    body:has(.c7-account__dashboard) #c7-content > section,
+    body:has(.c7-account__dashboard) #c7-content > section * {
+      text-align: left !important;
+    }
+  
+    /* Outer section: header row, then dashboard row */
+    body:has(.c7-account__dashboard) #c7-content > section {
+      width: 100% !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      display: grid !important;
+      grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+      column-gap: 20px !important;
+      row-gap: 80px !important;
+      align-items: start !important;
+    }
+  
+    /* Header (title + menu) — wrapped by your existing JS into .carrick-account-header */
+    body:has(.c7-account__dashboard) #c7-content .carrick-account-header {
+      grid-column: 1 / -1 !important;
+      width: 100% !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: flex-start !important;
+      gap: 32px !important;
+    }
+  
+    body:has(.c7-account__dashboard) #c7-content .carrick-account-header > h1 {
+      width: 100% !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      color: #341f24 !important;
+      font-family: "Antic Didone", Georgia, serif !important;
+      font-size: clamp(2rem, 4vw, 36px) !important;
+      font-weight: 400 !important;
+      line-height: 1 !important;
+      letter-spacing: -0.02em !important;
+      text-transform: none !important;
+    }
+  
+    body:has(.c7-account__dashboard)
+      #c7-content
+      .carrick-account-header
+      .c7-account-menu {
+      width: 100% !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      display: flex !important;
+      flex-wrap: wrap !important;
+      align-items: center !important;
+      gap: 0 !important;
+      background: transparent !important;
+      border: 0 !important;
+    }
+  
+    body:has(.c7-account__dashboard)
+      #c7-content
+      .carrick-account-header
+      .c7-account-menu
+      a {
+      margin: 0 !important;
+      padding: 0.25rem 1.25rem !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      border-right: 1px solid rgba(52, 31, 36, 0.22) !important;
+      color: #341f24 !important;
+      font-size: 0.75rem !important;
+      letter-spacing: 0.02em !important;
+      text-transform: uppercase !important;
+      text-decoration: none !important;
+    }
+  
+    body:has(.c7-account__dashboard)
+      #c7-content
+      .carrick-account-header
+      .c7-account-menu
+      a:first-child {
+      padding-left: 0 !important;
+    }
+  
+    body:has(.c7-account__dashboard)
+      #c7-content
+      .carrick-account-header
+      .c7-account-menu
+      a:last-child {
+      border-right: 0 !important;
+    }
+  
+    body:has(.c7-account__dashboard)
+      #c7-content
+      .carrick-account-header
+      .c7-account-menu
+      a:hover,
+    body:has(.c7-account__dashboard)
+      #c7-content
+      .carrick-account-header
+      .c7-account-menu
+      a[aria-current="page"] {
+      color: #ab8d3f !important;
+    }
+  
+    /* Dashboard block: col 1 = intro, col 2-3 = card rows */
+    body:has(.c7-account__dashboard) #c7-content .c7-account__dashboard {
+      grid-column: 1 / -1 !important;
+      max-width: none !important;
+      width: 100% !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      display: grid !important;
+      grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+      column-gap: 20px !important;
+      row-gap: 20px !important;
+      align-items: start !important;
+    }
+
+    /* JS wraps h2 + message in one left-column cell */
+    body:has(.c7-account__dashboard) #c7-content .carrick-dashboard-intro {
+      grid-column: 1 / 2 !important;
+      grid-row: 1 / 3 !important;
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: flex-start !important;
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+
+    body:has(.c7-account__dashboard) #c7-content .c7-account__dashboard h2 {
+      margin: 0 !important;
+      padding: 0 !important;
+      color: #ab8d3f !important;
+      font-family: "Antic Didone", Georgia, serif !important;
+      font-size: clamp(2rem, 4vw, 36px) !important;
+      font-weight: 400 !important;
+      line-height: 1 !important;
+      text-transform: uppercase !important;
+    }
+  
+    /* NOTE: real class is __message (double underscore) not _message */
+    body:has(.c7-account__dashboard) #c7-content .c7-account__dashboard__message {
+      margin: 60px 0 0 !important;
+      padding: 0 !important;
+      background: transparent !important;
+      border: 0 !important;
+    }
+    
+    body:has(.c7-account__dashboard)
+      #c7-content
+      .carrick-tile-row
+      a[class*="button"] {
+      margin: 0 !important;
+      flex-shrink: 0 !important;
+    }
+  
+    body:has(.c7-account__dashboard)
+      #c7-content
+      .c7-account__dashboard__message
+      h3 {
+      width: 100% !important;
+      margin: 0 !important;
+      padding-bottom: 0 !important;
+      border-bottom: none !important;
+      font-size: 1.25rem !important;
+      font-weight: 400 !important;
+      text-transform: uppercase !important;
+    }
+  
+    body:has(.c7-account__dashboard)
+      #c7-content
+      .c7-account__dashboard__message
+      p {
+      width: 100% !important;
+      margin: 0 !important;
+      padding: 0 0 20px !important;
+      font-size: 0.875rem !important;
+      line-height: 1.5 !important;
+      border-bottom: 1px solid rgba(52, 31, 36, 0.45) !important;
+    }
+  
+    /* Each .c7-account-row is its own 2-col grid of cards, placed into col 2-3 */
+    body:has(.c7-account__dashboard) #c7-content .c7-account-row {
+      grid-column: 2 / 4 !important;
+      width: 100% !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      display: grid !important;
+      grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+      column-gap: 20px !important;
+      row-gap: 20px !important;
+      align-items: stretch !important;
+    }
+  
+    body:has(.c7-account__dashboard)
+      #c7-content
+      .c7-account-row:nth-child(1 of .c7-account-row) {
+      grid-row: 1 !important;
+    }
+  
+    body:has(.c7-account__dashboard)
+      #c7-content
+      .c7-account-row:nth-child(2 of .c7-account-row) {
+      grid-row: 2 !important;
+    }
+  
+    /* Individual cards — real class is .c7-account-tile, not .c7-account-title */
+    body:has(.c7-account__dashboard) #c7-content .c7-account-tile {
+      width: 100% !important;
+      min-height: 0 !important;
+      margin: 0 !important;
+      padding: 20px !important;
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 20px !important;
+      border: 1px solid rgba(106, 94, 77, 0.72) !important;
+      background-color: transparent !important;
+      color: #341f24 !important;
+    }
+  
+    body:has(.c7-account__dashboard) #c7-content .c7-account-tile > p {
+      margin: 0 !important;
+      font-size: 0.875rem !important;
+      line-height: 1.5 !important;
+    }
+
+    body:has(.c7-account__dashboard) #c7-content .c7-account-tile > h3 {
+      margin: 0 !important;
+      padding: 0 !important;
+      font-size: 1.25rem !important;
+      font-weight: 400 !important;
+      text-transform: uppercase !important;
+    }
+  
+    body:has(.c7-account__dashboard) #c7-content .c7-account-tile__section {
+      margin: 0 !important;
+      padding: 0 !important;
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 0 !important;
+      font-size: 0.875rem !important;
+      line-height: 1.8 !important;
+    }
+  
+    body:has(.c7-account__dashboard)
+      #c7-content
+      .c7-account-tile__section
+      strong {
+      font-weight: 700 !important;
+    }
+  
+    body:has(.c7-account__dashboard) #c7-content .c7-account-tile__section em {
+      color: rgba(52, 31, 36, 0.72) !important;
+      font-style: italic !important;
+    }
+  
+    /* Buttons — outline style for Edit links */
+    body:has(.c7-account__dashboard)
+      #c7-content
+      .c7-account-tile
+      a[class*="button"]:not(.carrick-club-join),
+    body:has(.c7-account__dashboard)
+      #c7-content
+      .c7-account-tile
+      button[class*="button"]:not(.carrick-club-join) {
+      position: static !important;
+      margin-top: 0 !important;
+      width: auto !important;
+      min-width: 72px !important;
+      padding: 0.6rem 1rem !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      border: 1px solid #ab8d3f !important;
+      background-color: transparent !important;
+      color: #ab8d3f !important;
+      font-size: 0.6875rem !important;
+      letter-spacing: 0.06em !important;
+      text-transform: uppercase !important;
+      text-decoration: none !important;
+    }
+
+    body:has(.c7-account__dashboard)
+      #c7-content
+      .c7-account-tile
+      a[class*="button"]:not(.carrick-club-join):hover,
+    body:has(.c7-account__dashboard)
+      #c7-content
+      .c7-account-tile
+      button[class*="button"]:not(.carrick-club-join):hover {
+      background-color: #ab8d3f !important;
+      color: #ffffff !important;
+    }
+
+    /* "Join a club" — solid fit-width CTA */
+    body:has(.c7-account__dashboard)
+      #c7-content
+      .c7-account-tile
+      a.carrick-club-join,
+    body:has(.c7-account__dashboard)
+      #c7-content
+      .c7-account-tile
+      button.carrick-club-join {
+      width: auto !important;
+      min-width: 0 !important;
+      margin-top: auto !important;
+      margin-bottom: 0 !important;
+      align-self: flex-start !important;
+      padding: 0.75rem 1.5rem !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      border: 1px solid #ab8d3f !important;
+      border-color: #ab8d3f !important;
+      background-color: #ab8d3f !important;
+      color: #ffffff !important;
+      font-family: "Albert Sans", Arial, sans-serif !important;
+      font-size: 0.6875rem !important;
+      font-weight: 700 !important;
+      letter-spacing: 0.06em !important;
+      text-transform: uppercase !important;
+      text-decoration: none !important;
+      cursor: pointer !important;
+      box-shadow: none !important;
+    }
+
+    body:has(.c7-account__dashboard)
+      #c7-content
+      .c7-account-tile
+      a.carrick-club-join:hover,
+    body:has(.c7-account__dashboard)
+      #c7-content
+      .c7-account-tile
+      button.carrick-club-join:hover {
+      border-color: #341f24 !important;
+      background-color: #341f24 !important;
+      color: #ffffff !important;
+    }
+  
+    body:has(.c7-account__dashboard) #c7-content #c7-modal:empty {
+      display: none !important;
+    }
+  
+    @media screen and (max-width: 991px) {
+      body:has(.c7-account__dashboard) #c7-content {
+        padding: 80px 20px !important;
+      }
+      body:has(.c7-account__dashboard) #c7-content > section {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        row-gap: 48px !important;
+      }
+      body:has(.c7-account__dashboard) #c7-content .carrick-account-header,
+      body:has(.c7-account__dashboard) #c7-content .c7-account__dashboard {
+        grid-column: 1 / -1 !important;
+      }
+      body:has(.c7-account__dashboard) #c7-content .c7-account__dashboard {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+      }
+      body:has(.c7-account__dashboard) #c7-content .carrick-dashboard-intro {
+        grid-column: 1 / -1 !important;
+        grid-row: auto !important;
+      }
+      body:has(.c7-account__dashboard) #c7-content .c7-account-row {
+        grid-column: 1 / -1 !important;
+        grid-row: auto !important;
+      }
+      body:has(.c7-account__dashboard)
+        #c7-content
+        .c7-account__dashboard__message
+        p {
+        margin-top: 20px !important;
+      }
+    }
+  
+    @media screen and (max-width: 767px) {
+      body:has(.c7-account__dashboard) #c7-content {
+        padding: 64px 20px !important;
+      }
+      body:has(.c7-account__dashboard) #c7-content > section,
+      body:has(.c7-account__dashboard) #c7-content .c7-account__dashboard,
+      body:has(.c7-account__dashboard) #c7-content .c7-account-row {
+        grid-template-columns: 1fr !important;
+      }
+      body:has(.c7-account__dashboard)
+        #c7-content
+        .carrick-account-header
+        .c7-account-menu {
+        display: grid !important;
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 0.5rem 0 !important;
+      }
+      body:has(.c7-account__dashboard)
+        #c7-content
+        .carrick-account-header
+        .c7-account-menu
+        a {
+        justify-content: flex-start !important;
+        padding: 0.35rem 0.75rem 0.35rem 0 !important;
+      }
+      body:has(.c7-account__dashboard) #c7-content .c7-account-tile {
+        min-height: 0 !important;
+      }
+    }
+  </style>
+  

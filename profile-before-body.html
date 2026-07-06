@@ -1,0 +1,62 @@
+<script>
+    (() => {
+      function wrapCarrickDashboardIntro() {
+        const dashboard = document.querySelector(".c7-account__dashboard");
+        if (
+          !dashboard ||
+          dashboard.querySelector(":scope > .carrick-dashboard-intro")
+        )
+          return;
+  
+        const heading = dashboard.querySelector(":scope > h2");
+        const message = dashboard.querySelector(
+          ":scope > .c7-account__dashboard__message",
+        );
+        if (!heading || !message) return;
+  
+        const wrapper = document.createElement("div");
+        wrapper.className = "carrick-dashboard-intro";
+        dashboard.insertBefore(wrapper, heading);
+        wrapper.appendChild(heading);
+        wrapper.appendChild(message);
+      }
+  
+      function wrapAccountTileNameRow() {
+    document.querySelectorAll('.c7-account-tile__section').forEach((section) => {
+      if (section.querySelector(':scope > .carrick-tile-row')) return; // already wrapped
+  
+      const strong = section.querySelector(':scope > strong');
+      const link = section.querySelector(':scope > a.c7-button-alt-small');
+      if (!strong || !link) return;
+  
+      const row = document.createElement('div');
+      row.className = 'carrick-tile-row';
+      section.insertBefore(row, strong);
+      row.appendChild(strong);
+      row.appendChild(link);
+  
+      link.textContent = 'EDIT';
+    });
+  }
+      
+      function run() {
+        wrapCarrickDashboardIntro();
+        wrapAccountTileNameRow();
+      }
+  
+      function init() {
+        run();
+        new MutationObserver(run).observe(document.body, {
+          childList: true,
+          subtree: true,
+        });
+      }
+  
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", init);
+      } else {
+        init();
+      }
+    })();
+  </script>
+  
