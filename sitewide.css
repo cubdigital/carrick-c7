@@ -536,6 +536,7 @@ body:has(.c7-account__information) #c7-content .c7-account__menu {
 
 body:has(.c7-account__information) #c7-content .c7-account__information {
   grid-column: 1 / -1 !important;
+  max-width: none !important;
   width: 100% !important;
   margin: 0 !important;
   padding: 0 !important;
@@ -562,20 +563,28 @@ body:has(.c7-account__information) #c7-content .c7-account__information > h2 {
 
 body:has(.c7-account__information)
   #c7-content
-  .c7-account__information__address {
-  grid-column: 2 / 3 !important;
+  .c7-account__information__address,
+body:has(.c7-account__information)
+  #c7-content
+  .c7-account__information__password {
   width: 100% !important;
   margin: 0 !important;
-  padding: 0 !important;
+  padding: 20px !important;
+  border: 1px solid rgba(106, 94, 77, 0.72) !important;
+  background-color: transparent !important;
+  align-self: stretch !important;
+}
+
+body:has(.c7-account__information)
+  #c7-content
+  .c7-account__information__address {
+  grid-column: 2 / 3 !important;
 }
 
 body:has(.c7-account__information)
   #c7-content
   .c7-account__information__password {
   grid-column: 3 / 4 !important;
-  width: 100% !important;
-  margin: 0 !important;
-  padding: 0 !important;
 }
 
 body:has(.c7-account__information) #c7-content .carrick-tile-row {
@@ -677,7 +686,9 @@ body:has(.c7-account__information) #c7-content .c7-account__information > .c7-fo
   grid-column: 2 / 4 !important;
   width: 100% !important;
   margin: 0 !important;
-  padding: 0 !important;
+  padding: 20px !important;
+  border: 1px solid rgba(106, 94, 77, 0.72) !important;
+  background-color: transparent !important;
   display: grid !important;
   gap: 1.5rem !important;
 }

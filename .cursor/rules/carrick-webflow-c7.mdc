@@ -2,12 +2,64 @@
 alwaysApply: true
 ---
 
-This project is using webflow with c7 integration. No nextjs.
-Update code base on my request and I'll need to copy paste it to webflow
-I don't have access to c7
-The site branch url is: https://carrick-6a9492.webflow.io/profile
-all routes under /profile is under c7. eg. /profile/account
-I have to use css and js to make the ui match my design
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/cubdigital/carrick-c7@main/sitewide.css">
+# Carrick — Webflow + Commerce7 (C7)
 
-https://github.com/cubdigital/carrick-c7.git
+Webflow site with Commerce7 integration. **Not Next.js.** There is no app build step — only CSS and JS assets.
+
+## Constraints
+
+- No access to the C7 backend or admin. All UI changes are done with CSS/JS against C7-rendered DOM.
+- C7 owns all routes under `/profile` (e.g. `/profile`, `/profile/login`, `/profile/account`).
+- Staging URL: https://carrick-6a9492.webflow.io/profile
+- C7 loads via: `https://cdn.commerce7.com/beta/commerce7.js` (`data-tenant="carrick-winery"`).
+- C7 swaps views client-side — site-wide scripts must use `MutationObserver` and survive DOM re-renders.
+- Scope styles with `body:has(.c7-…)` selectors so rules apply after C7 injects markup.
+- Font `@import` for Albert Sans lives in the Webflow site head — do not duplicate in CSS files.
+
+## Hosting & deployment
+
+Assets live in this repo and are served to Webflow via **jsDelivr** (GitHub CDN). The user pushes to GitHub; Webflow loads the files by URL. **Do not tell the user to copy-paste file contents into Webflow** — only edit the source files here.
+
+- **Repo:** https://github.com/cubdigital/carrick-c7.git
+- **Branch:** `main`
+
+### Webflow Site Settings → Custom Code
+
+**Head:**
+```html
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/cubdigital/carrick-c7@main/sitewide.css">
+```
+
+**Footer:**
+```html
+<script defer type="text/javascript" src="https://cdn.commerce7.com/beta/commerce7.js" id="c7-javascript" data-tenant="carrick-winery"></script>
+<script defer src="https://cdn.jsdelivr.net/gh/cubdigital/carrick-c7@main/sitewide.js"></script>
+```
+
+Profile-specific assets use the same CDN pattern when linked from the `/profile` page settings.
+
+## Source files (edit these)
+
+| File | Scope | Loaded from |
+|------|-------|-------------|
+| `sitewide.css` | Site-wide C7 overrides (login, profile, shared layout) | Site Settings → Head |
+| `sitewide.js` | Site-wide behaviour (age gate, profile/login DOM wrappers, observers) | Site Settings → Footer |
+| `profile-head.css` | `/profile` dashboard-only styles | `/profile` page → Custom Code → Head |
+| `profile-before-body.html` | Legacy inline script — prefer moving logic into `sitewide.js` or a `.js` file |
+
+**Use `.css` and `.js` files only.** Do not create HTML wrapper files with `<script>` or `<style>` tags unless the user explicitly asks.
+
+## Agent workflow
+
+1. Edit the relevant `.css` or `.js` file directly.
+2. Keep changes scoped and minimal — match existing patterns in the file.
+3. Remind the user to `git push` to `main` when done; Webflow picks up changes after jsDelivr cache refreshes (~minutes).
+4. For an immediate CDN update, pin jsDelivr to a commit hash instead of `@main`.
+
+## C7 DOM reference
+
+Common selectors agents will target:
+
+- Login: `.c7-account-login`
+- Dashboard: `.c7-account__dashboard`, `.c7-account-tile__section`
+- Custom wrappers added by our JS: `.carrick-dashboard-intro`, `.carrick-tile-row`, `.carrick-profile-layout`
