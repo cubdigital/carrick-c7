@@ -809,6 +809,50 @@
       }
     }
 
+    function absorbTileActionLink(row, link, boundary) {
+      const linkWrapper = link.parentElement;
+      row.appendChild(link);
+      if (
+        linkWrapper &&
+        linkWrapper !== boundary &&
+        linkWrapper !== row &&
+        !linkWrapper.textContent.trim() &&
+        !linkWrapper.querySelector('img, input, iframe, svg')
+      ) {
+        linkWrapper.remove();
+      }
+    }
+
+    function pruneEmptyTileSectionNodes(section) {
+      section.querySelectorAll(':scope > p').forEach((paragraph) => {
+        if (
+          !paragraph.textContent.trim() &&
+          !paragraph.querySelector('img, input, iframe, svg')
+        ) {
+          paragraph.remove();
+        }
+      });
+
+      [...section.childNodes].forEach((node) => {
+        if (node.nodeType === Node.TEXT_NODE && !node.textContent.trim()) {
+          node.remove();
+        }
+      });
+
+      while (section.lastChild) {
+        const trailing = section.lastChild;
+        if (trailing.nodeType === Node.TEXT_NODE && !trailing.textContent.trim()) {
+          trailing.remove();
+          continue;
+        }
+        if (trailing.nodeType === Node.ELEMENT_NODE && trailing.tagName === 'BR') {
+          trailing.remove();
+          continue;
+        }
+        break;
+      }
+    }
+
     function structureProfileSection(section) {
       if (section.querySelector(':scope > .carrick-tile-row')) return;
 
@@ -821,7 +865,7 @@
         row.className = 'carrick-tile-row';
         section.insertBefore(row, strong);
         row.appendChild(strong);
-        row.appendChild(link);
+        absorbTileActionLink(row, link, section);
         setEditLabel(link);
 
         const details = document.createElement('div');
@@ -832,6 +876,7 @@
         if (details.childNodes.length) {
           section.appendChild(details);
         }
+        pruneEmptyTileSectionNodes(section);
         return;
       }
 
@@ -843,9 +888,10 @@
         content.appendChild(section.firstChild);
       }
       row.appendChild(content);
-      row.appendChild(link);
+      absorbTileActionLink(row, link, section);
       section.appendChild(row);
       setEditLabel(link);
+      pruneEmptyTileSectionNodes(section);
     }
 
     function structureProfileTile() {
@@ -1300,9 +1346,13 @@
         const tile = section.closest('.c7-account-tile');
         const heading = tile?.querySelector(':scope > h3');
         if (heading && (/profile/i.test(heading.textContent || '') || /credit card/i.test(heading.textContent || '') || /club/i.test(heading.textContent || ''))) return;
-        if (section.querySelector(':scope > .carrick-tile-row')) return;
 
-        const link = section.querySelector(':scope > a[class*="button"]');
+        if (section.querySelector(':scope > .carrick-tile-row')) {
+          pruneEmptyTileSectionNodes(section);
+          return;
+        }
+
+        const link = section.querySelector(':scope a[class*="button"], :scope button[class*="button"]');
         if (!link) return;
 
         const row = document.createElement('div');
@@ -1312,7 +1362,7 @@
         if (strong) {
           section.insertBefore(row, strong);
           row.appendChild(strong);
-          row.appendChild(link);
+          absorbTileActionLink(row, link, section);
         } else {
           const content = document.createElement('div');
           content.className = 'carrick-tile-row__content';
@@ -1320,9 +1370,11 @@
             content.appendChild(section.firstChild);
           }
           row.appendChild(content);
-          row.appendChild(link);
+          absorbTileActionLink(row, link, section);
           section.appendChild(row);
         }
+
+        pruneEmptyTileSectionNodes(section);
 
         if (/edit/i.test(link.textContent || '')) {
           setEditLabel(link);

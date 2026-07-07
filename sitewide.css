@@ -1419,6 +1419,15 @@ body:has(.c7-account__dashboard) #c7-content .c7-account-tile > p {
   line-height: 1.5 !important;
 }
 
+body:has(.c7-account__dashboard) #c7-content .c7-account-tile > p:empty,
+body:has(.c7-account__dashboard) #c7-content .c7-account-tile__section > p:empty {
+  display: none !important;
+}
+
+body:has(.c7-account__dashboard) #c7-content .c7-account-tile__section > br:last-child {
+  display: none !important;
+}
+
 body:has(.c7-account__dashboard) #c7-content .c7-account-tile > h3 {
   margin: 0 !important;
   padding: 0 !important;
