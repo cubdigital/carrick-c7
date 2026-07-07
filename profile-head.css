@@ -111,19 +111,11 @@ body:has(.c7-account__dashboard) #c7-content .carrick-credit-card__body {
   gap: 10px !important;
 }
 
-body:has(.c7-account__dashboard) #c7-content .carrick-credit-card__brand {
-  flex: 0 0 auto !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  padding: 0 !important;
-  border: 1px solid rgba(106, 94, 77, 0.72) !important;
-}
 
 body:has(.c7-account__dashboard) #c7-content .carrick-credit-card__brand img {
   display: block !important;
   height: auto !important;
-  max-height: 16px !important;
+  max-height: 14px !important;
   width: auto !important;
 }
 
@@ -391,8 +383,19 @@ body:has(.c7-account__dashboard) #c7-content .c7-account-tile__section:empty {
 }
 
 body:has(.c7-account__dashboard) #c7-content .c7-account-tile.carrick-club-tile {
-  align-self: start !important;
-  height: auto !important;
+  align-self: stretch !important;
+  height: 100% !important;
+}
+
+body:has(.c7-account__dashboard)
+  #c7-content
+  .c7-account-tile.carrick-club-tile
+  a.carrick-club-join,
+body:has(.c7-account__dashboard)
+  #c7-content
+  .c7-account-tile.carrick-club-tile
+  button.carrick-club-join {
+  margin-top: auto !important;
 }
 
 body:has(.c7-account__dashboard) #c7-content .c7-account-tile__section > br:last-child,
