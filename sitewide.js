@@ -538,6 +538,23 @@
         );
         if (!link) return;
 
+        const linkWrapper = link.parentElement;
+        if (
+          linkWrapper &&
+          linkWrapper !== tile &&
+          linkWrapper.tagName === 'P' &&
+          [...linkWrapper.childNodes].every(
+            (node) =>
+              node === link ||
+              (node.nodeType === Node.TEXT_NODE && !node.textContent.trim()),
+          )
+        ) {
+          tile.appendChild(link);
+          if (!linkWrapper.textContent.trim()) {
+            linkWrapper.remove();
+          }
+        }
+
         if (!link.classList.contains('carrick-club-join')) {
           link.classList.add('carrick-club-join');
         }
@@ -545,6 +562,8 @@
         if (link.textContent.trim() !== 'JOIN A CLUB') {
           link.textContent = 'JOIN A CLUB';
         }
+
+        pruneEmptyAccountTileNodes(tile);
       });
     }
 
@@ -851,6 +870,21 @@
         }
         break;
       }
+    }
+
+    function pruneEmptyAccountTileNodes(tile) {
+      pruneEmptyTileSectionNodes(tile);
+
+      tile.querySelectorAll(':scope > .c7-account-tile__section').forEach((section) => {
+        if (
+          !section.textContent.trim() &&
+          !section.querySelector('img, input, iframe, svg, a, button')
+        ) {
+          section.remove();
+          return;
+        }
+        pruneEmptyTileSectionNodes(section);
+      });
     }
 
     function structureProfileSection(section) {

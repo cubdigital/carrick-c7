@@ -1420,8 +1420,14 @@ body:has(.c7-account__dashboard) #c7-content .c7-account-tile > p {
 }
 
 body:has(.c7-account__dashboard) #c7-content .c7-account-tile > p:empty,
-body:has(.c7-account__dashboard) #c7-content .c7-account-tile__section > p:empty {
+body:has(.c7-account__dashboard) #c7-content .c7-account-tile__section > p:empty,
+body:has(.c7-account__dashboard) #c7-content .c7-account-tile__section:empty {
   display: none !important;
+}
+
+body:has(.c7-account__dashboard) #c7-content .c7-account-tile.carrick-club-tile {
+  align-self: start !important;
+  height: auto !important;
 }
 
 body:has(.c7-account__dashboard) #c7-content .c7-account-tile__section > br:last-child {
@@ -1504,7 +1510,7 @@ body:has(.c7-account__dashboard)
   button.carrick-club-join {
   width: auto !important;
   min-width: 0 !important;
-  margin-top: auto !important;
+  margin-top: 0 !important;
   margin-bottom: 0 !important;
   align-self: flex-start !important;
   padding: 0.75rem 1.5rem !important;
