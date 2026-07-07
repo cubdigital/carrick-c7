@@ -1005,6 +1005,51 @@ body:has(.carrick-address-book-page) #c7-content .c7-account-tile .carrick-tile-
   line-height: 1.8 !important;
 }
 
+body:has(.carrick-credit-cards-page) #c7-content .carrick-page-intro .c7-account-row--add {
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: flex !important;
+  justify-content: flex-start !important;
+  align-items: flex-start !important;
+  text-align: left !important;
+}
+
+body:has(.carrick-credit-cards-page)
+  #c7-content
+  .carrick-page-intro
+  .c7-account-row--add
+  a[class*="button"],
+body:has(.carrick-credit-cards-page)
+  #c7-content
+  .carrick-page-intro
+  .c7-account-row--add
+  button[class*="button"] {
+  align-self: flex-start !important;
+  margin-left: 0 !important;
+  margin-right: auto !important;
+}
+
+body:has(.carrick-credit-cards-page) #c7-content .c7-account-row:not(.c7-account-row--add) {
+  width: 100% !important;
+  max-width: none !important;
+  grid-template-columns: minmax(0, 1fr) !important;
+}
+
+body:has(.carrick-credit-cards-page) #c7-content .c7-account-tile.carrick-credit-card-tile {
+  width: 100% !important;
+  max-width: none !important;
+  min-width: 0 !important;
+  padding: 20px 24px !important;
+}
+
+body:has(.carrick-credit-cards-page) #c7-content .carrick-credit-card-tile .carrick-tile-row--credit {
+  width: 100% !important;
+  margin: 0 !important;
+  align-items: center !important;
+  gap: 20px !important;
+}
+
 body:has(.carrick-account-subpage) #c7-content .carrick-tile-row--credit {
   margin: 0 !important;
   align-items: flex-start !important;
@@ -1061,6 +1106,7 @@ body:has(.carrick-account-subpage)
   #c7-content
   .c7-account-tile
   button[class*="button"]:not(.carrick-clubs-join):not(.carrick-subpage-add) {
+  position: static !important;
   flex-shrink: 0 !important;
   width: auto !important;
   min-width: 72px !important;
