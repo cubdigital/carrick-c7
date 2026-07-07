@@ -873,9 +873,12 @@
     }
 
     function pruneEmptyAccountTileNodes(tile) {
+      tile.querySelectorAll(':scope > br').forEach((br) => br.remove());
       pruneEmptyTileSectionNodes(tile);
 
-      tile.querySelectorAll(':scope > .c7-account-tile__section').forEach((section) => {
+      tile
+        .querySelectorAll(':scope > .c7-account-tile__section, :scope > .c7-account-tile__content')
+        .forEach((section) => {
         if (
           !section.textContent.trim() &&
           !section.querySelector('img, input, iframe, svg, a, button')
@@ -887,11 +890,204 @@
       });
     }
 
-    function structureProfileSection(section) {
-      if (section.querySelector(':scope > .carrick-tile-row')) return;
+    function finishAddressBookTileDetails(container) {
+      const row = container.querySelector(
+        ':scope > .carrick-tile-row:not(.carrick-tile-row--credit)',
+      );
+      if (!row || container.querySelector(':scope > .carrick-list-tile__details')) return false;
 
+      const details = document.createElement('div');
+      details.className = 'carrick-list-tile__details';
+
+      while (row.nextSibling) {
+        const node = row.nextSibling;
+        if (node.nodeType === Node.ELEMENT_NODE && node.tagName === 'BR') {
+          node.remove();
+          continue;
+        }
+        if (node.nodeType === Node.TEXT_NODE && !node.textContent.trim()) {
+          node.remove();
+          continue;
+        }
+        details.appendChild(node);
+      }
+
+      if (!details.childNodes.length) return false;
+
+      formatAddressDetailsText(details);
+      row.insertAdjacentElement('afterend', details);
+      return true;
+    }
+
+    function structureAddressBookDashboardTile() {
+      document.querySelectorAll('.c7-account-tile').forEach((tile) => {
+        const heading = tile.querySelector(':scope > h3');
+        if (!heading || !/address book/i.test(heading.textContent || '')) return;
+
+        const container = tile.querySelector(
+          ':scope > .c7-account-tile__section, :scope > .c7-account-tile__content',
+        );
+        if (container) {
+          finishAddressBookTileDetails(container);
+          pruneEmptyTileSectionNodes(container);
+        }
+
+        pruneEmptyAccountTileNodes(tile);
+      });
+    }
+
+    function formatDashboardPasswordContent(content) {
+      if (!content || content.dataset.carrickPasswordReady === 'true') return;
+
+      const passwordText = content.textContent.replace(/\s+/g, ' ').trim();
+      const passwordMatch = passwordText.match(/^Password:\s*(.+)$/i);
+      if (!passwordMatch) return;
+
+      content.textContent = '';
+      content.classList.add('carrick-profile-password');
+
+      const label = document.createElement('span');
+      label.className = 'carrick-profile-password__label';
+      label.textContent = 'Password:';
+
+      const value = document.createElement('span');
+      value.className = 'carrick-profile-password__value';
+      value.textContent = passwordMatch[1];
+
+      content.appendChild(label);
+      content.appendChild(value);
+      content.dataset.carrickPasswordReady = 'true';
+    }
+
+    function splitAccountInfoLine(line) {
+      const text = line.replace(/\s+/g, ' ').trim();
+      if (!text) return [];
+
+      const emailPhoneMatch = text.match(/^(.+@\S+?)\s*(0\d{1,3}[\s-]?\d{3}[\s-]?\d{3,4})$/);
+      if (emailPhoneMatch) {
+        return [emailPhoneMatch[1], emailPhoneMatch[2].trim()];
+      }
+
+      return [text];
+    }
+
+    function formatContentLines(details, lineClass, readyKey = 'carrickDetailsReady', lineSplitter) {
+      if (!details || details.dataset[readyKey] === 'true') return;
+
+      const lines = [];
+      let current = '';
+
+      function flushLine() {
+        const trimmed = current.replace(/\s+/g, ' ').trim();
+        if (trimmed) lines.push(trimmed);
+        current = '';
+      }
+
+      [...details.childNodes].forEach((node) => {
+        if (node.nodeName === 'BR') {
+          flushLine();
+          return;
+        }
+        if (node.nodeType === Node.TEXT_NODE) {
+          current += node.textContent;
+          return;
+        }
+        if (node.nodeType === Node.ELEMENT_NODE) {
+          flushLine();
+          const text = node.textContent.replace(/\s+/g, ' ').trim();
+          if (text) lines.push(text);
+        }
+      });
+      flushLine();
+
+      const finalLines = lineSplitter ? lines.flatMap(lineSplitter) : lines;
+      if (!finalLines.length) return;
+
+      details.textContent = '';
+      finalLines.forEach((line) => {
+        const lineEl = document.createElement('span');
+        lineEl.className = lineClass;
+        lineEl.textContent = line;
+        details.appendChild(lineEl);
+      });
+      details.dataset[readyKey] = 'true';
+    }
+
+    function formatProfileDetailsLines(details) {
+      formatContentLines(details, 'carrick-profile-details__line', 'carrickDetailsReady');
+    }
+
+    function formatAccountInfoDetailsLines(details) {
+      if (!details) return;
+
+      if (details.dataset.carrickAccountDetailsReady === 'true') {
+        const existingLines = [...details.querySelectorAll(':scope > .carrick-account-info__line')].map(
+          (lineEl) => lineEl.textContent.trim(),
+        );
+        const repairedLines = existingLines.flatMap(splitAccountInfoLine);
+        if (repairedLines.length !== existingLines.length) {
+          details.textContent = '';
+          delete details.dataset.carrickAccountDetailsReady;
+          repairedLines.forEach((line) => {
+            const lineEl = document.createElement('span');
+            lineEl.className = 'carrick-account-info__line';
+            lineEl.textContent = line;
+            details.appendChild(lineEl);
+          });
+          details.dataset.carrickAccountDetailsReady = 'true';
+        }
+        return;
+      }
+
+      formatContentLines(
+        details,
+        'carrick-account-info__line',
+        'carrickAccountDetailsReady',
+        splitAccountInfoLine,
+      );
+    }
+
+    function finishProfileSectionDetails(section) {
+      const nameRow = section.querySelector(
+        ':scope > .carrick-tile-row:not(.carrick-tile-row--password):not(.carrick-tile-row--password-info)',
+      );
+      if (!nameRow || section.querySelector(':scope > .carrick-profile-details')) return false;
+
+      const passwordRow = section.querySelector(':scope > .carrick-tile-row--password');
+      const details = document.createElement('div');
+      details.className = 'carrick-profile-details';
+
+      while (nameRow.nextSibling && nameRow.nextSibling !== passwordRow) {
+        details.appendChild(nameRow.nextSibling);
+      }
+
+      if (!details.childNodes.length) return false;
+
+      formatProfileDetailsLines(details);
+      nameRow.insertAdjacentElement('afterend', details);
+      return true;
+    }
+
+    function structureProfileSection(section) {
       const link = section.querySelector(':scope a[class*="button"]');
       if (!link) return;
+
+      const passwordRow = section.querySelector(':scope > .carrick-tile-row--password');
+
+      if (section.querySelector(':scope > .carrick-tile-row')) {
+        finishProfileSectionDetails(section);
+        const readyDetails = section.querySelector(':scope > .carrick-profile-details');
+        if (readyDetails && readyDetails.dataset.carrickDetailsReady !== 'true') {
+          formatProfileDetailsLines(readyDetails);
+        }
+        if (passwordRow) {
+          const passwordContent = passwordRow.querySelector('.carrick-tile-row__content');
+          formatDashboardPasswordContent(passwordContent);
+        }
+        setEditLabel(link);
+        pruneEmptyTileSectionNodes(section);
+        return;
+      }
 
       const strong = section.querySelector(':scope > strong');
       if (strong) {
@@ -908,6 +1104,7 @@
           details.appendChild(row.nextSibling);
         }
         if (details.childNodes.length) {
+          formatProfileDetailsLines(details);
           section.appendChild(details);
         }
         pruneEmptyTileSectionNodes(section);
@@ -921,6 +1118,7 @@
       while (section.firstChild && section.firstChild !== link) {
         content.appendChild(section.firstChild);
       }
+      formatDashboardPasswordContent(content);
       row.appendChild(content);
       absorbTileActionLink(row, link, section);
       section.appendChild(row);
@@ -988,6 +1186,7 @@
             details.appendChild(nodes[i]);
           }
           if (details.childNodes.length) {
+            formatProfileDetailsLines(details);
             section.appendChild(details);
           }
         }
@@ -999,6 +1198,7 @@
         for (let i = accountLinkIdx + 1; i < passwordLinkIdx; i += 1) {
           passwordContent.appendChild(nodes[i]);
         }
+        formatDashboardPasswordContent(passwordContent);
         passwordRow.appendChild(passwordContent);
         passwordRow.appendChild(passwordLink);
         setEditLabel(passwordLink);
@@ -1304,6 +1504,11 @@
         return;
       }
 
+      const existingAddressDetails = addressSection.querySelector('.carrick-account-info__details');
+      if (existingAddressDetails) {
+        formatAccountInfoDetailsLines(existingAddressDetails);
+      }
+
       if (block.dataset.carrickInformationReady === 'true') return;
 
       let structured = false;
@@ -1324,6 +1529,7 @@
         });
 
         if (addressDetails.childNodes.length) {
+          formatAccountInfoDetailsLines(addressDetails);
           addressRow.appendChild(addressDetails);
           addressRow.appendChild(addressLink);
           addressSection.textContent = '';
@@ -1376,7 +1582,9 @@
     }
 
     function wrapAccountTileActionRows() {
-      document.querySelectorAll('.c7-account-tile__section').forEach((section) => {
+      document
+        .querySelectorAll('.c7-account-tile__section, .c7-account-tile__content')
+        .forEach((section) => {
         const tile = section.closest('.c7-account-tile');
         const heading = tile?.querySelector(':scope > h3');
         if (heading && (/profile/i.test(heading.textContent || '') || /credit card/i.test(heading.textContent || '') || /club/i.test(heading.textContent || ''))) return;
@@ -1417,6 +1625,7 @@
 
       structureProfileTile();
       structureCreditCardTile();
+      structureAddressBookDashboardTile();
     }
 
     function run() {

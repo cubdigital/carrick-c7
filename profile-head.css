@@ -52,8 +52,35 @@ body:has(.c7-account__dashboard)
 body:has(.c7-account__dashboard) #c7-content .carrick-profile-details {
   margin: 0 !important;
   padding: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 2px !important;
   font-size: 0.875rem !important;
-  line-height: 1.8 !important;
+  line-height: 1.4 !important;
+}
+
+body:has(.c7-account__dashboard) #c7-content .carrick-profile-details__line {
+  display: block !important;
+}
+
+body:has(.c7-account__dashboard) #c7-content .carrick-tile-row--password {
+  align-items: flex-start !important;
+}
+
+body:has(.c7-account__dashboard)
+  #c7-content
+  .carrick-tile-row--password
+  .carrick-tile-row__content {
+  display: flex !important;
+  flex-direction: column !important;
+  flex-wrap: nowrap !important;
+  align-items: flex-start !important;
+  gap: 2px !important;
+}
+
+body:has(.c7-account__dashboard) #c7-content .carrick-profile-password__label,
+body:has(.c7-account__dashboard) #c7-content .carrick-profile-password__value {
+  display: block !important;
 }
 
 body:has(.c7-account__dashboard) #c7-content .carrick-tile-row__content {
@@ -89,7 +116,7 @@ body:has(.c7-account__dashboard) #c7-content .carrick-credit-card__brand {
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  padding: 4px 8px !important;
+  padding: 0 !important;
   border: 1px solid rgba(106, 94, 77, 0.72) !important;
 }
 
@@ -368,7 +395,9 @@ body:has(.c7-account__dashboard) #c7-content .c7-account-tile.carrick-club-tile 
   height: auto !important;
 }
 
-body:has(.c7-account__dashboard) #c7-content .c7-account-tile__section > br:last-child {
+body:has(.c7-account__dashboard) #c7-content .c7-account-tile__section > br:last-child,
+body:has(.c7-account__dashboard) #c7-content .c7-account-tile__content > br:last-child,
+body:has(.c7-account__dashboard) #c7-content .c7-account-tile > br {
   display: none !important;
 }
 
@@ -380,7 +409,8 @@ body:has(.c7-account__dashboard) #c7-content .c7-account-tile > h3 {
   text-transform: uppercase !important;
 }
 
-body:has(.c7-account__dashboard) #c7-content .c7-account-tile__section {
+body:has(.c7-account__dashboard) #c7-content .c7-account-tile__section,
+body:has(.c7-account__dashboard) #c7-content .c7-account-tile__content {
   margin: 0 !important;
   padding: 0 !important;
   display: flex !important;
@@ -390,11 +420,32 @@ body:has(.c7-account__dashboard) #c7-content .c7-account-tile__section {
   line-height: 1.8 !important;
 }
 
-body:has(.c7-account__dashboard) #c7-content .c7-account-tile__section strong {
+body:has(.c7-account__dashboard) #c7-content .carrick-list-tile__details {
+  margin: 0 !important;
+  padding: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0 !important;
+  font-size: 0.875rem !important;
+  line-height: 1.4 !important;
+}
+
+body:has(.c7-account__dashboard) #c7-content .carrick-list-tile__line {
+  display: block !important;
+}
+
+body:has(.c7-account__dashboard) #c7-content .carrick-list-tile__details em {
+  color: rgba(52, 31, 36, 0.72) !important;
+  font-style: italic !important;
+}
+
+body:has(.c7-account__dashboard) #c7-content .c7-account-tile__section strong,
+body:has(.c7-account__dashboard) #c7-content .c7-account-tile__content strong {
   font-weight: 700 !important;
 }
 
-body:has(.c7-account__dashboard) #c7-content .c7-account-tile__section em {
+body:has(.c7-account__dashboard) #c7-content .c7-account-tile__section em,
+body:has(.c7-account__dashboard) #c7-content .c7-account-tile__content em {
   color: rgba(52, 31, 36, 0.72) !important;
   font-style: italic !important;
 }

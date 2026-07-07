@@ -619,6 +619,10 @@ body:has(.c7-account__information)
   margin: 0 !important;
 }
 
+body:has(.c7-account__information) #c7-content .carrick-account-info__line {
+  display: block !important;
+}
+
 body:has(.c7-account__information)
   #c7-content
   .carrick-account-info__password {
@@ -790,7 +794,7 @@ body:has(.carrick-order-history-page)
   #c7-content
   .c7-account__order-history
   > .c7-account__dashboard__message {
-  grid-column: 2 / 4 !important;
+  grid-column: 2 / 3 !important;
   width: 100% !important;
   margin: 0 !important;
   padding: 20px !important;
@@ -855,7 +859,7 @@ body:has(.carrick-order-history-page)
   #c7-content
   .c7-account__order-history
   > .c7-pagination {
-  grid-column: 2 / 4 !important;
+  grid-column: 2 / 3 !important;
   width: 100% !important;
 }
 
@@ -1005,7 +1009,7 @@ body:has(.carrick-address-book-page) #c7-content .c7-account-tile .carrick-tile-
   line-height: 1.8 !important;
 }
 
-body:has(.carrick-credit-cards-page) #c7-content .carrick-page-intro .c7-account-row--add {
+body:has(.carrick-account-subpage) #c7-content .carrick-page-intro .c7-account-row--add {
   width: 100% !important;
   margin: 0 !important;
   padding: 0 !important;
@@ -1015,12 +1019,12 @@ body:has(.carrick-credit-cards-page) #c7-content .carrick-page-intro .c7-account
   text-align: left !important;
 }
 
-body:has(.carrick-credit-cards-page)
+body:has(.carrick-account-subpage)
   #c7-content
   .carrick-page-intro
   .c7-account-row--add
   a[class*="button"],
-body:has(.carrick-credit-cards-page)
+body:has(.carrick-account-subpage)
   #c7-content
   .carrick-page-intro
   .c7-account-row--add
@@ -1068,7 +1072,7 @@ body:has(.carrick-account-subpage) #c7-content .carrick-credit-card__brand {
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  padding: 4px 8px !important;
+  padding: 0 !important;
   border: 1px solid rgba(106, 94, 77, 0.72) !important;
 }
 
@@ -1270,7 +1274,7 @@ body:has(.c7-account__dashboard) #c7-content .carrick-credit-card__brand {
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  padding: 4px 8px !important;
+  padding: 0 !important;
   border: 1px solid rgba(106, 94, 77, 0.72) !important;
 }
 
