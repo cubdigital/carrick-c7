@@ -653,8 +653,27 @@
         .trim();
     }
 
+    function addressDetailsNeedRepair(details) {
+      if (!details) return false;
+      if (details.dataset.carrickFormatted !== 'true') return true;
+
+      const lines = [...details.querySelectorAll(':scope > .carrick-list-tile__line, :scope > em')];
+      if (!lines.length) return true;
+      if (lines.length === 1 && lines[0].textContent.trim().length > 48) return true;
+      if (/(?<=[a-z])(?=[A-Z])/.test(details.textContent) && details.textContent.length > 40) {
+        return true;
+      }
+
+      return false;
+    }
+
     function formatAddressDetailsText(details) {
-      if (details.dataset.carrickFormatted === 'true') return;
+      if (!details) return;
+
+      if (details.dataset.carrickFormatted === 'true') {
+        if (!addressDetailsNeedRepair(details)) return;
+        delete details.dataset.carrickFormatted;
+      }
 
       const rawText = collectAddressDetailText(details);
       if (!rawText) return;
@@ -894,9 +913,24 @@
       const row = container.querySelector(
         ':scope > .carrick-tile-row:not(.carrick-tile-row--credit)',
       );
-      if (!row || container.querySelector(':scope > .carrick-list-tile__details')) return false;
+      if (!row) return false;
 
-      const details = document.createElement('div');
+      let details = container.querySelector(':scope > .carrick-list-tile__details');
+
+      if (details) {
+        while (row.nextSibling && row.nextSibling !== details) {
+          details.appendChild(row.nextSibling);
+        }
+
+        if (addressDetailsNeedRepair(details)) {
+          formatAddressDetailsText(details);
+          return true;
+        }
+
+        return false;
+      }
+
+      details = document.createElement('div');
       details.className = 'carrick-list-tile__details';
 
       while (row.nextSibling) {
@@ -971,6 +1005,37 @@
       return [text];
     }
 
+    function splitProfileDetailLine(line) {
+      const text = line.replace(/\s+/g, ' ').trim();
+      if (!text) return [];
+
+      const locationEmailPhoneMatch = text.match(
+        /^(.+?,\s*NZ)([a-zA-Z0-9.+_-]+@[a-zA-Z0-9.-]+\.[a-z]{2,})(\d{2,4}[\s-]?\d{3}[\s-]?\d{3,4})$/i,
+      );
+      if (locationEmailPhoneMatch) {
+        return [
+          locationEmailPhoneMatch[1],
+          locationEmailPhoneMatch[2],
+          locationEmailPhoneMatch[3].trim(),
+        ];
+      }
+
+      return splitAccountInfoLine(text);
+    }
+
+    function profileDetailsNeedRepair(details) {
+      if (!details) return false;
+      if (details.dataset.carrickDetailsReady !== 'true') return true;
+
+      const lines = [...details.querySelectorAll(':scope > .carrick-profile-details__line')];
+      if (!lines.length) return true;
+      if (lines.length === 1 && lines[0].textContent.includes('@') && /\d{7,}/.test(lines[0].textContent)) {
+        return true;
+      }
+
+      return false;
+    }
+
     function formatContentLines(details, lineClass, readyKey = 'carrickDetailsReady', lineSplitter) {
       if (!details || details.dataset[readyKey] === 'true') return;
 
@@ -1014,7 +1079,19 @@
     }
 
     function formatProfileDetailsLines(details) {
-      formatContentLines(details, 'carrick-profile-details__line', 'carrickDetailsReady');
+      if (!details) return;
+
+      if (details.dataset.carrickDetailsReady === 'true') {
+        if (!profileDetailsNeedRepair(details)) return;
+        delete details.dataset.carrickDetailsReady;
+      }
+
+      formatContentLines(
+        details,
+        'carrick-profile-details__line',
+        'carrickDetailsReady',
+        splitProfileDetailLine,
+      );
     }
 
     function formatAccountInfoDetailsLines(details) {
@@ -1126,14 +1203,42 @@
       pruneEmptyTileSectionNodes(section);
     }
 
+    function repairProfileSection(section) {
+      if (!section.querySelector(':scope > .carrick-tile-row')) {
+        structureProfileSection(section);
+        return;
+      }
+
+      finishProfileSectionDetails(section);
+
+      const details = section.querySelector(':scope > .carrick-profile-details');
+      if (details) {
+        formatProfileDetailsLines(details);
+      }
+
+      const passwordRow = section.querySelector(':scope > .carrick-tile-row--password');
+      if (passwordRow) {
+        formatDashboardPasswordContent(passwordRow.querySelector('.carrick-tile-row__content'));
+      }
+
+      section
+        .querySelectorAll(':scope a[class*="button"], :scope button[class*="button"]')
+        .forEach(setEditLabel);
+      pruneEmptyTileSectionNodes(section);
+    }
+
     function structureProfileTile() {
       document.querySelectorAll('.c7-account-tile').forEach((tile) => {
         const heading = tile.querySelector(':scope > h3');
         if (!heading || !/profile/i.test(heading.textContent || '')) return;
-        if (tile.dataset.carrickProfileReady === 'true') return;
 
         const sections = [...tile.querySelectorAll(':scope > .c7-account-tile__section')];
         if (!sections.length) return;
+
+        if (tile.dataset.carrickProfileReady === 'true') {
+          sections.forEach(repairProfileSection);
+          return;
+        }
 
         if (sections.length >= 2) {
           sections.forEach(structureProfileSection);
@@ -1142,8 +1247,8 @@
         }
 
         const section = sections[0];
-        const links = [...section.querySelectorAll(':scope > a[class*="button"]')];
-        if (links.length < 2) {
+        const links = [...section.querySelectorAll(':scope > a[class*="button"], :scope > button[class*="button"]')];
+        if (links.length < 2 || section.querySelector(':scope > .carrick-tile-row--password')) {
           structureProfileSection(section);
           tile.dataset.carrickProfileReady = 'true';
           return;
@@ -1590,6 +1695,9 @@
         if (heading && (/profile/i.test(heading.textContent || '') || /credit card/i.test(heading.textContent || '') || /club/i.test(heading.textContent || ''))) return;
 
         if (section.querySelector(':scope > .carrick-tile-row')) {
+          if (heading && /address book/i.test(heading.textContent || '')) {
+            finishAddressBookTileDetails(section);
+          }
           pruneEmptyTileSectionNodes(section);
           return;
         }
