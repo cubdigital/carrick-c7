@@ -9,8 +9,11 @@ Webflow site with Commerce7 integration. **Not Next.js.** There is no app build 
 ## Constraints
 
 - No access to the C7 backend or admin. All UI changes are done with CSS/JS against C7-rendered DOM.
-- C7 owns all routes under `/profile` (e.g. `/profile`, `/profile/login`, `/profile/account`).
-- Staging URL: https://carrick-6a9492.webflow.io/profile
+- C7 owns routes under `/profile` (e.g. `/profile`, `/profile/login`, `/profile/account`), `/shop`, and `/cart`.
+- Staging URLs:
+  - Profile: https://carrick-6a9492.webflow.io/profile
+  - Shop: https://carrick-6a9492.webflow.io/shop
+  - Cart: https://carrick-6a9492.webflow.io/cart
 - C7 loads via: `https://cdn.commerce7.com/beta/commerce7.js` (`data-tenant="carrick-winery"`).
 - C7 swaps views client-side — site-wide scripts must use `MutationObserver` and survive DOM re-renders.
 - Scope styles with `body:has(.c7-…)` selectors so rules apply after C7 injects markup.
@@ -35,16 +38,45 @@ Assets live in this repo and are served to Webflow via **jsDelivr** (GitHub CDN)
 <script defer src="https://cdn.jsdelivr.net/gh/cubdigital/carrick-c7@main/sitewide.js"></script>
 ```
 
-Profile-specific assets use the same CDN pattern when linked from the `/profile` page settings.
+Route-specific assets use the same CDN pattern when linked from page settings.
+
+### `/profile` page → Custom Code
+**Head:** `profile-head.css` via jsDelivr
+
+### `/shop` page → Custom Code
+**Head:**
+```html
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/cubdigital/carrick-c7@main/shop-head.css">
+```
+
+**Footer:**
+```html
+<script defer src="https://cdn.jsdelivr.net/gh/cubdigital/carrick-c7@main/shop-script.js"></script>
+```
+
+### `/cart` page → Custom Code
+**Head:**
+```html
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/cubdigital/carrick-c7@main/cart-head.css">
+```
+
+**Footer:**
+```html
+<script defer src="https://cdn.jsdelivr.net/gh/cubdigital/carrick-c7@main/cart-script.js"></script>
+```
 
 ## Source files (edit these)
 
 | File | Scope | Loaded from |
 |------|-------|-------------|
-| `sitewide.css` | Site-wide C7 overrides (login, profile, shared layout) | Site Settings → Head |
-| `sitewide.js` | Site-wide behaviour (age gate, profile/login DOM wrappers, observers) | Site Settings → Footer |
+| `sitewide.css` | Site-wide C7 overrides (login, profile, shop add-to-cart, shared layout) | Site Settings → Head |
+| `sitewide.js` | Site-wide behaviour (age gate, profile/login DOM wrappers, cart, observers) | Site Settings → Footer |
 | `profile-head.css` | `/profile` dashboard-only styles | `/profile` page → Custom Code → Head |
 | `profile-before-body.html` | Legacy inline script — prefer moving logic into `sitewide.js` or a `.js` file |
+| `shop-head.css` | `/shop` page styles (filter buttons, View All, product cards) | `/shop` page → Custom Code → Head |
+| `shop-script.js` | `/shop` behaviour (View All toggle, C7 tile filter, product card hydration) | `/shop` page → Custom Code → Footer |
+| `cart-head.css` | `/cart` page styles (3-column layout, empty/populated cart states) | `/cart` page → Custom Code → Head |
+| `cart-script.js` | `/cart` behaviour (empty-cart message formatting, DOM observer) | `/cart` page → Custom Code → Footer |
 
 **Use `.css` and `.js` files only.** Do not create HTML wrapper files with `<script>` or `<style>` tags unless the user explicitly asks.
 
@@ -57,8 +89,26 @@ Profile-specific assets use the same CDN pattern when linked from the `/profile`
 
 ## C7 DOM reference
 
-Common selectors agents will target:
+### Profile
 
 - Login: `.c7-account-login`
 - Dashboard: `.c7-account__dashboard`, `.c7-account-tile__section`
 - Custom wrappers added by our JS: `.carrick-dashboard-intro`, `.carrick-tile-row`, `.carrick-profile-layout`
+
+### Shop
+
+Webflow CMS markup + C7 product hydration via `shop-script.js`. Key data attributes:
+
+- Section / View All: `[data-shop-section]`, `[data-shop-view-all]`, `[data-shop-item]`, `[data-shop-expanded]`
+- Collection filter: `[data-shop-filter]`, `[data-shop-filter-results]`, `[data-shop-results-section]`, `[data-shop-results-heading]`, `[data-shop-empty]`
+- Product cards: `[data-c7-card]`, `[data-c7-product-slug]`, `[data-c7-collection-id]`, `[data-c7-image]`, `[data-c7-price]`, `[data-c7-link]`, `[data-c7-title]`, `[data-c7-product-subtitle]`
+- Add to cart (sitewide): `.shop-product-add-to-cart .c7-product__variant__add-to-cart`, `.c7-button`
+
+### Cart
+
+C7 cart page mounted in `#c7-content`. Key selectors:
+
+- Wrapper / layout: `#c7-content`, `.c7-cart__wrapper`, `.c7-cart__buttons--top`
+- Empty state: `.c7-message--empty-cart`, `.c7-empty-cart-text`, `.c7-empty-cart-button`
+- Populated cart: `.c7-cart__items`, `.c7-cart__items-container`, `.c7-cart__form`, `.c7-cart__summary`, `.c7-cart__totals`, `.c7-cart__footer`, `.c7-cart__buttons`, `.c7-cart__item`, `.c7-cart__row`
+- Custom JS: `carrickFormatEmptyCartMessage()` — uses `MutationObserver` to survive C7 re-renders

@@ -1,0 +1,321 @@
+  @import url('https://fonts.googleapis.com/css2?family=Albert+Sans:wght@400;500;600;700&family=Antic+Didone&display=swap');
+
+  /* ========================================
+     /cart — C7 Cart Page
+     Carrick 3-column layout
+  ======================================== */
+
+  body,
+  body:has(.c7-cart__wrapper),
+  body:has(.c7-message--empty-cart) {
+    background-color: #e7e2d6 !important;
+    color: #341f24 !important;
+    font-family: 'Albert Sans', Arial, sans-serif !important;
+  }
+
+  .codeembed.w-embed,
+  #c7-content {
+    width: 100% !important;
+  }
+
+  #c7-content {
+    max-width: 1440px !important;
+    min-height: 430px !important;
+    margin: 0 auto !important;
+    padding: 120px 20px !important;
+
+    display: block !important;
+
+    color: #341f24 !important;
+    font-family: 'Albert Sans', Arial, sans-serif !important;
+    box-sizing: border-box !important;
+  }
+
+  #c7-content *,
+  #c7-content *::before,
+  #c7-content *::after {
+    box-sizing: border-box !important;
+  }
+
+  /* C7 puts the h1 and cart wrapper inside section,
+     so the grid needs to sit here.
+  */
+
+  #c7-content > section {
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    column-gap: 20px !important;
+    row-gap: 20px !important;
+    align-items: start !important;
+  }
+
+  /* Page title */
+
+  #c7-content > section > h1,
+  #c7-content h1 {
+    grid-column: 1 / 2 !important;
+    grid-row: 1 !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    color: #341f24 !important;
+    font-family: 'Antic Didone', Georgia, serif !important;
+    font-size: clamp(1.5rem, 4vw, 36px) !important;
+    font-weight: 400 !important;
+    line-height: 1 !important;
+    letter-spacing: -0.02em !important;
+    text-align: left !important;
+    text-transform: none !important;
+  }
+
+  /* Wrapper around C7 cart */
+
+  #c7-content > section > div {
+    grid-column: 2 / 4 !important;
+    grid-row: 1 !important;
+
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  #c7-content .c7-cart__wrapper {
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    column-gap: 20px !important;
+    row-gap: 20px !important;
+    align-items: start !important;
+
+    color: #341f24 !important;
+    font-family: 'Albert Sans', Arial, sans-serif !important;
+  }
+
+  #c7-content .c7-cart__buttons--top {
+    display: none !important;
+  }
+
+  /* Empty cart state */
+
+  #c7-content .c7-message--empty-cart {
+    grid-column: 1 / 2 !important;
+
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 20px !important;
+
+    background: transparent !important;
+    border: 0 !important;
+    color: #341f24 !important;
+    text-align: left !important;
+  }
+
+  #c7-content .c7-message--empty-cart p {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  #c7-content .c7-empty-cart-text {
+    margin: 0 !important;
+    padding: 0 !important;
+
+    color: #341f24 !important;
+    font-family: 'Albert Sans', Arial, sans-serif !important;
+    font-size: 0.875rem !important;
+    font-weight: 400 !important;
+    line-height: 1.5 !important;
+    text-align: left !important;
+  }
+
+  /* Empty cart button */
+
+  #c7-content .c7-empty-cart-button,
+  #c7-content .c7-message--empty-cart a {
+    width: auto !important;
+    min-width: 180px !important;
+    min-height: 2.25rem !important;
+
+    margin: 0 !important;
+    padding: 0.75rem 1.5rem !important;
+
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    border: 1px solid #ab8d3f !important;
+    border-radius: 0 !important;
+    background-color: #ab8d3f !important;
+    box-shadow: none !important;
+
+    color: #ffffff !important;
+    font-family: 'Albert Sans', Arial, sans-serif !important;
+    font-size: 0.6875rem !important;
+    font-weight: 700 !important;
+    line-height: 1 !important;
+    letter-spacing: 0.06em !important;
+    text-align: center !important;
+    text-transform: uppercase !important;
+    text-decoration: none !important;
+
+    cursor: pointer !important;
+    transition:
+      background-color 200ms ease,
+      border-color 200ms ease,
+      color 200ms ease,
+      opacity 200ms ease !important;
+  }
+
+  #c7-content .c7-empty-cart-button:hover,
+  #c7-content .c7-message--empty-cart a:hover {
+    border-color: #341f24 !important;
+    background-color: #341f24 !important;
+    color: #ffffff !important;
+  }
+
+  /* Populated cart fallback */
+
+  #c7-content .c7-cart__items,
+  #c7-content .c7-cart__items-container,
+  #c7-content .c7-cart__form {
+    grid-column: 1 / 2 !important;
+    width: 100% !important;
+  }
+
+  #c7-content .c7-cart__summary,
+  #c7-content .c7-cart__totals,
+  #c7-content .c7-cart__footer,
+  #c7-content .c7-cart__buttons {
+    grid-column: 2 / 3 !important;
+    width: 100% !important;
+  }
+
+  #c7-content .c7-cart__item,
+  #c7-content .c7-cart__row {
+    margin: 0 0 24px !important;
+    padding: 0 0 24px !important;
+    border-bottom: 1px solid rgba(52, 31, 36, 0.2) !important;
+  }
+
+  #c7-content p,
+  #c7-content div,
+  #c7-content span,
+  #c7-content label {
+    color: #341f24 !important;
+    font-family: 'Albert Sans', Arial, sans-serif !important;
+  }
+
+  #c7-content input,
+  #c7-content select {
+    border-radius: 0 !important;
+    border: 1px solid rgba(52, 31, 36, 0.45) !important;
+    background-color: transparent !important;
+    color: #341f24 !important;
+    font-family: 'Albert Sans', Arial, sans-serif !important;
+  }
+
+  #c7-content button,
+  #c7-content .c7-button,
+  #c7-content a.c7-button {
+    border-radius: 0 !important;
+    border-color: #ab8d3f !important;
+    background-color: #ab8d3f !important;
+    color: #ffffff !important;
+    font-family: 'Albert Sans', Arial, sans-serif !important;
+    text-transform: uppercase !important;
+  }
+
+  #c7-content button:hover,
+  #c7-content .c7-button:hover,
+  #c7-content a.c7-button:hover {
+    border-color: #341f24 !important;
+    background-color: #341f24 !important;
+    color: #ffffff !important;
+  }
+
+  #c7-modal:empty {
+    display: none !important;
+  }
+
+  /* Tablet */
+
+  @media screen and (max-width: 991px) {
+    #c7-content {
+      padding: 80px 20px !important;
+    }
+
+    #c7-content > section {
+      grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    }
+
+    #c7-content > section > h1,
+    #c7-content h1 {
+      grid-column: 1 / 3 !important;
+      grid-row: auto !important;
+      margin-bottom: 2rem !important;
+    }
+
+    #c7-content > section > div {
+      grid-column: 1 / 3 !important;
+      grid-row: auto !important;
+    }
+  }
+
+  /* Mobile */
+
+  @media screen and (max-width: 767px) {
+    #c7-content {
+      padding: 64px 20px !important;
+    }
+
+    #c7-content > section {
+      grid-template-columns: 1fr !important;
+    }
+
+    #c7-content > section > h1,
+    #c7-content h1 {
+      grid-column: 1 / -1 !important;
+      margin-bottom: 1.5rem !important;
+      font-size: clamp(2rem, 12vw, 3.25rem) !important;
+    }
+
+    #c7-content > section > div,
+    #c7-content .c7-cart__wrapper,
+    #c7-content .c7-message--empty-cart,
+    #c7-content .c7-cart__items,
+    #c7-content .c7-cart__items-container,
+    #c7-content .c7-cart__form,
+    #c7-content .c7-cart__summary,
+    #c7-content .c7-cart__totals,
+    #c7-content .c7-cart__footer,
+    #c7-content .c7-cart__buttons {
+      grid-column: 1 / -1 !important;
+    }
+
+    #c7-content .c7-cart__wrapper {
+      grid-template-columns: 1fr !important;
+      gap: 3rem !important;
+    }
+  }
+
+    /* Hide C7 empty-cart plus icon */
+  #c7-content .c7-message--empty-cart::before,
+  #c7-content .c7-message--empty-cart::after {
+    display: none !important;
+    content: none !important;
+  }

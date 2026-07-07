@@ -1,0 +1,122 @@
+.shop-filter-button {
+  cursor: pointer;
+  transition:
+    background-color 150ms ease,
+    color 150ms ease,
+    border-color 150ms ease;
+}
+
+.shop-filter-button.is-active {
+  background-color: #c9d4df;
+  border-color: #c9d4df;
+}
+
+/* SHOP VIEW ALL BUTTON — FORCE CONSISTENT STYLE ALL BREAKPOINTS */
+.shop-view-all,
+a.shop-view-all,
+.shop-view-all.w-button,
+[data-shop-view-all] {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  min-width: 128px !important;
+  min-height: 42px !important;
+  padding: 0.75rem 2rem !important;
+
+  border: 1px solid #ab8d3f !important;
+  border-radius: 0 !important;
+  background-color: #ab8d3f !important;
+
+  color: #ffffff !important;
+  font-family: "Albert Sans", Arial, sans-serif !important;
+  font-size: 14px !important;
+  font-weight: 400 !important;
+  line-height: 18px !important;
+  text-align: center !important;
+  text-transform: uppercase !important;
+  text-decoration: none !important;
+
+  opacity: 1 !important;
+  visibility: visible !important;
+  box-sizing: border-box !important;
+}
+
+.shop-view-all *,
+[data-shop-view-all] * {
+  color: #ffffff !important;
+}
+
+.shop-view-all:hover,
+[data-shop-view-all]:hover {
+  background-color: #341f24 !important;
+  border-color: #341f24 !important;
+  color: #ffffff !important;
+}
+
+/* SHOP VIEW ALL / HIDE BUTTON — RESTORE ORIGINAL STYLE */
+[data-shop-view-all],
+a[data-shop-view-all],
+.shop-view-all,
+a.shop-view-all {
+  background-color: #ab8d3f !important;
+  border: 1px solid #ab8d3f !important;
+  color: #ffffff !important;
+
+  opacity: 1 !important;
+  text-decoration: none !important;
+  text-transform: uppercase !important;
+
+  transition: opacity 200ms ease !important;
+}
+
+[data-shop-view-all] *,
+.shop-view-all * {
+  color: #ffffff !important;
+}
+
+[data-shop-view-all]:hover,
+a[data-shop-view-all]:hover,
+.shop-view-all:hover,
+a.shop-view-all:hover {
+  background-color: #ab8d3f !important;
+  border-color: #ab8d3f !important;
+  color: #ffffff !important;
+  opacity: 0.8 !important;
+}
+
+[data-shop-view-all]:hover *,
+.shop-view-all:hover * {
+  color: #ffffff !important;
+}
+
+/* Club-member login CTA — match Add to Cart button */
+.c7-product__login-message {
+  width: 100% !important;
+}
+
+.c7-product__login-message .c7-button {
+  display: block !important;
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 0.75rem 1.5rem !important;
+  border: 1px solid #ab8d3f !important;
+  border-radius: 0 !important;
+  background-color: #ab8d3f !important;
+  color: #ffffff !important;
+  font-family: "Albert Sans", Arial, sans-serif !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.06em !important;
+  line-height: 1.2 !important;
+  text-align: center !important;
+  text-transform: uppercase !important;
+  cursor: pointer !important;
+  box-sizing: border-box !important;
+}
+
+.c7-product__login-message .c7-button:hover {
+  border-color: #341f24 !important;
+  background-color: #341f24 !important;
+  color: #ffffff !important;
+}
