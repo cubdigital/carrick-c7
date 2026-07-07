@@ -964,6 +964,10 @@ body:has(.carrick-account-subpage) #c7-content .carrick-list-tile__details > * {
   margin: 0 !important;
 }
 
+body:has(.carrick-account-subpage) #c7-content .carrick-list-tile__line {
+  display: block !important;
+}
+
 body:has(.carrick-account-subpage) #c7-content .carrick-list-tile__details em {
   color: rgba(52, 31, 36, 0.72) !important;
   font-style: italic !important;
@@ -977,6 +981,28 @@ body:has(.carrick-account-subpage) #c7-content .carrick-tile-row {
   align-items: flex-start !important;
   justify-content: space-between !important;
   gap: 12px !important;
+}
+
+body:has(.carrick-address-book-page) #c7-content .c7-account-row:not(.c7-account-row--add) {
+  width: 100% !important;
+  max-width: none !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+}
+
+body:has(.carrick-address-book-page) #c7-content .c7-account-tile {
+  width: 100% !important;
+  max-width: none !important;
+  gap: 20px !important;
+}
+
+body:has(.carrick-address-book-page) #c7-content .c7-account-tile .carrick-tile-row {
+  margin: 0 !important;
+}
+
+body:has(.carrick-address-book-page) #c7-content .c7-account-tile .carrick-tile-row > strong {
+  font-size: 0.875rem !important;
+  font-weight: 700 !important;
+  line-height: 1.8 !important;
 }
 
 body:has(.carrick-account-subpage) #c7-content .carrick-tile-row--credit {

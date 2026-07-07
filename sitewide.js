@@ -548,6 +548,135 @@
       });
     }
 
+    const ADDRESS_COUNTRIES = [
+      'New Zealand',
+      'Australia',
+      'United States',
+      'United Kingdom',
+      'Canada',
+    ];
+
+    function splitConcatenatedAddressSegment(text) {
+      return text
+        .split(/(?<=[a-z])(?=[A-Z])|(?<=[A-Z])(?=[A-Z][a-z])|(?<=[a-zA-Z])(?=\d)/)
+        .map((part) => part.trim())
+        .filter(Boolean);
+    }
+
+    function parseAddressDetailLines(rawText) {
+      let text = rawText.replace(/\s+/g, ' ').trim();
+      if (!text) return [];
+
+      let isDefault = false;
+      if (/\(Default\)/i.test(text)) {
+        isDefault = true;
+        text = text.replace(/\s*\(Default\)\s*/gi, ' ').trim();
+      }
+
+      let phone = '';
+      const phoneMatch = text.match(/Phone:\s*(.+)$/i);
+      if (phoneMatch) {
+        phone = `Phone: ${phoneMatch[1].trim()}`;
+        text = text.slice(0, phoneMatch.index).trim();
+      }
+
+      let country = '';
+      for (const countryName of ADDRESS_COUNTRIES) {
+        if (text.endsWith(countryName)) {
+          country = countryName;
+          text = text.slice(0, -countryName.length).trim();
+          break;
+        }
+      }
+
+      let postal = '';
+      const postalMatch = text.match(/(\d{4,10})$/);
+      if (postalMatch) {
+        postal = postalMatch[1];
+        text = text.slice(0, postalMatch.index).trim();
+      }
+
+      const lines = splitConcatenatedAddressSegment(text);
+
+      if (postal && lines.length) {
+        lines[lines.length - 1] = `${lines[lines.length - 1]} ${postal}`;
+      } else if (postal) {
+        lines.push(postal);
+      }
+
+      if (country) lines.push(country);
+      if (phone) lines.push(phone);
+      if (isDefault) lines.push('(Default)');
+
+      return lines;
+    }
+
+    function collectAddressDetailText(details) {
+      let text = '';
+
+      details.childNodes.forEach((node) => {
+        if (node.nodeType === Node.ELEMENT_NODE && node.tagName === 'BR') {
+          text += '\n';
+          return;
+        }
+
+        if (node.nodeType === Node.ELEMENT_NODE && node.tagName === 'EM') {
+          text += `\n${node.textContent.trim()}\n`;
+          return;
+        }
+
+        text += (node.textContent || '').trim();
+      });
+
+      return text
+        .replace(/[ \t]+/g, ' ')
+        .replace(/ *\n */g, '\n')
+        .trim();
+    }
+
+    function formatAddressDetailsText(details) {
+      if (details.dataset.carrickFormatted === 'true') return;
+
+      const rawText = collectAddressDetailText(details);
+      if (!rawText) return;
+
+      let lines = rawText.includes('\n')
+        ? rawText
+            .split('\n')
+            .map((line) => line.trim())
+            .filter(Boolean)
+        : [];
+
+      if (lines.length <= 1) {
+        lines = parseAddressDetailLines(rawText);
+      } else {
+        lines = lines.flatMap((line) =>
+          /(?<=[a-z])(?=[A-Z])/.test(line) && line.length > 24
+            ? parseAddressDetailLines(line)
+            : [line],
+        );
+      }
+
+      if (!lines.length) return;
+
+      details.textContent = '';
+      details.dataset.carrickFormatted = 'true';
+
+      lines.forEach((line) => {
+        if (/^\(Default\)$/i.test(line)) {
+          const defaultLine = document.createElement('em');
+          defaultLine.textContent = '(Default)';
+          details.appendChild(defaultLine);
+          return;
+        }
+
+        const addressLine = document.createElement('span');
+        addressLine.className = 'carrick-list-tile__line';
+        addressLine.textContent = line;
+        details.appendChild(addressLine);
+      });
+    }
+
     function formatCreditCardDetailsText(details) {
       if (details.dataset.carrickFormatted === 'true') return;
 
@@ -861,6 +990,7 @@
       tile.textContent = '';
       tile.appendChild(row);
       if (details.childNodes.length) {
+        formatAddressDetailsText(details);
         tile.appendChild(details);
       }
       tile.dataset.carrickListTileReady = 'true';
@@ -1020,7 +1150,13 @@
         ':scope .c7-account-row--add a[class*="button"], :scope .c7-account-row--add button[class*="button"]',
       );
       setSubpageAddLabel(addLink, 'ADD A NEW ADDRESS');
-      block.querySelectorAll('.c7-account-tile').forEach(structureAddressBookTile);
+      block.querySelectorAll('.c7-account-tile').forEach((tile) => {
+        structureAddressBookTile(tile);
+        const details = tile.querySelector(':scope > .carrick-list-tile__details');
+        if (details) {
+          formatAddressDetailsText(details);
+        }
+      });
     }
 
     function structureCreditCardsPage() {
