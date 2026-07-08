@@ -15,9 +15,21 @@ Webflow site with Commerce7 integration. **Not Next.js.** There is no app build 
   - Shop: https://carrick-6a9492.webflow.io/shop
   - Cart: https://carrick-6a9492.webflow.io/cart
 - C7 loads via: `https://cdn.commerce7.com/beta/commerce7.js` (`data-tenant="carrick-winery"`).
-- C7 swaps views client-side — site-wide scripts must use `MutationObserver` and survive DOM re-renders.
+- C7 swaps views client-side — scripts must use `MutationObserver` and survive DOM re-renders.
 - Scope styles with `body:has(.c7-…)` selectors so rules apply after C7 injects markup.
 - Font `@import` for Albert Sans lives in the Webflow site head — do not duplicate in CSS files.
+
+## File scoping
+
+**Only `/profile`-related code belongs in `sitewide.css` and `sitewide.js`.** Those files load on every page via Site Settings, but are reserved for profile/login/account behaviour and styles.
+
+**Shop and cart code stays in page-specific files** — do not add shop or cart logic/styles to the sitewide files:
+
+| Route | CSS | JS |
+|-------|-----|-----|
+| `/profile` | `sitewide.css`, `profile-head.css` | `sitewide.js` |
+| `/shop` | `shop-head.css` | `shop-script.js` |
+| `/cart` | `cart-head.css` | `cart-script.js` |
 
 ## Hosting & deployment
 
@@ -69,8 +81,8 @@ Route-specific assets use the same CDN pattern when linked from page settings.
 
 | File | Scope | Loaded from |
 |------|-------|-------------|
-| `sitewide.css` | Site-wide C7 overrides (login, profile, shop add-to-cart, shared layout) | Site Settings → Head |
-| `sitewide.js` | Site-wide behaviour (age gate, profile/login DOM wrappers, cart, observers) | Site Settings → Footer |
+| `sitewide.css` | `/profile` C7 overrides (login, dashboard, shared profile layout) — loaded site-wide but profile-scoped | Site Settings → Head |
+| `sitewide.js` | `/profile` behaviour (age gate, login DOM wrappers, observers) — loaded site-wide but profile-scoped | Site Settings → Footer |
 | `profile-head.css` | `/profile` dashboard-only styles | `/profile` page → Custom Code → Head |
 | `profile-before-body.html` | Legacy inline script — prefer moving logic into `sitewide.js` or a `.js` file |
 | `shop-head.css` | `/shop` page styles (filter buttons, View All, product cards) | `/shop` page → Custom Code → Head |
@@ -82,7 +94,7 @@ Route-specific assets use the same CDN pattern when linked from page settings.
 
 ## Agent workflow
 
-1. Edit the relevant `.css` or `.js` file directly.
+1. Edit the relevant `.css` or `.js` file directly — use page-specific files for `/shop` and `/cart`, not sitewide.
 2. Keep changes scoped and minimal — match existing patterns in the file.
 3. Remind the user to `git push` to `main` when done; Webflow picks up changes after jsDelivr cache refreshes (~minutes).
 4. For an immediate CDN update, pin jsDelivr to a commit hash instead of `@main`.
@@ -102,7 +114,7 @@ Webflow CMS markup + C7 product hydration via `shop-script.js`. Key data attribu
 - Section / View All: `[data-shop-section]`, `[data-shop-view-all]`, `[data-shop-item]`, `[data-shop-expanded]`
 - Collection filter: `[data-shop-filter]`, `[data-shop-filter-results]`, `[data-shop-results-section]`, `[data-shop-results-heading]`, `[data-shop-empty]`
 - Product cards: `[data-c7-card]`, `[data-c7-product-slug]`, `[data-c7-collection-id]`, `[data-c7-image]`, `[data-c7-price]`, `[data-c7-link]`, `[data-c7-title]`, `[data-c7-product-subtitle]`
-- Add to cart (sitewide): `.shop-product-add-to-cart .c7-product__variant__add-to-cart`, `.c7-button`
+- Add to cart: `.shop-product-add-to-cart .c7-product__variant__add-to-cart`, `.c7-button`
 
 ### Cart
 
