@@ -118,12 +118,10 @@ git push origin v1.0.9
 
 ### Step 4 — Purge jsDelivr cache
 
-Open each URL in a browser and confirm `{"status":"finished"}`:
+From the repo root:
 
-```
-https://purge.jsdelivr.net/gh/cubdigital/carrick-c7@latest/sitewide.css
-https://purge.jsdelivr.net/gh/cubdigital/carrick-c7@latest/sitewide.js
-https://purge.jsdelivr.net/gh/cubdigital/carrick-c7@latest/profile-head.css
+```bash
+node purge-jsdelivr.js
 ```
 
 ### Step 5 — Verify on staging
