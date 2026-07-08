@@ -655,6 +655,39 @@ document.addEventListener("DOMContentLoaded", () => {
        Keeps product image/price/link/title/subtitle enrichment.
     ======================================== */
 
+  function c7ProductImage(product) {
+    if (product.image && !product.image.includes("/images/original/")) {
+      return {
+        src: product.image,
+        srcset: product.imageSrcSet || "",
+      };
+    }
+
+    const image = product.images?.[0];
+    if (!image) return { src: "", srcset: "" };
+
+    const formats = image.formats ?? {};
+
+    const src =
+      formats.large?.webp ??
+      formats.medium?.webp ??
+      formats["x-large"]?.webp ??
+      image.src ??
+      "";
+
+    const srcset = [
+      formats.small?.webp && `${formats.small.webp} ${formats.small.width}w`,
+      formats.medium?.webp && `${formats.medium.webp} ${formats.medium.width}w`,
+      formats.large?.webp && `${formats.large.webp} ${formats.large.width}w`,
+      formats["x-large"]?.webp &&
+        `${formats["x-large"].webp} ${formats["x-large"].width}w`,
+    ]
+      .filter(Boolean)
+      .join(", ");
+
+    return { src, srcset };
+  }
+
   function updateWebflowProductCards(c7Products) {
     const c7ProductsBySlug = {};
 
@@ -720,20 +753,25 @@ document.addEventListener("DOMContentLoaded", () => {
         : null;
 
     /**
-     * Update image from Commerce7.
+     * Update image from Commerce7 formats (not images[0].src — that is the original upload).
      */
     if (image) {
-      const c7ImageUrl =
-        product.image ||
-        product.images?.[0]?.image ||
-        product.images?.[0]?.url ||
-        product.images?.[0]?.src ||
-        null;
+      const c7Image = c7ProductImage(product);
 
-      if (c7ImageUrl) {
-        image.src = c7ImageUrl;
-        image.removeAttribute("srcset");
-        image.removeAttribute("sizes");
+      if (c7Image.src) {
+        image.src = c7Image.src;
+
+        if (c7Image.srcset) {
+          image.srcset = c7Image.srcset;
+          image.sizes =
+            "(min-width: 1200px) 25vw, (min-width: 768px) 33vw, 50vw";
+        } else {
+          image.removeAttribute("srcset");
+          image.removeAttribute("sizes");
+        }
+
+        image.loading = "lazy";
+        image.decoding = "async";
         image.alt = product.title || "";
       } else {
         console.warn("No C7 image found for:", product.slug);
