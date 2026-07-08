@@ -441,27 +441,31 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   async function getCommerce7ProductsByCollection(collectionId, allProducts) {
-    /**
-     * This assumes Dave's proxy passes collectionId through to C7.
-     * If the proxy ignores collectionId, the code still filters by product.collections
-     * as a fallback, but true collection-specific order depends on proxy passthrough.
-     */
     const productsFromProxy = await fetchCommerce7Products({
       collectionId,
       webStatus: "Available",
       limit: 100,
     });
 
-    const filteredProducts = productsFromProxy.filter((product) =>
+    const collectionProducts = productsFromProxy.filter((product) =>
       productIsInCollection(product, collectionId),
     );
 
-    if (filteredProducts.length) {
-      return filteredProducts;
+    if (collectionProducts.length) {
+      return sortProductsByCollectionOrder(collectionProducts, collectionId);
+    }
+
+    /**
+     * Collection-scoped proxy responses use collectionXproduct, not collections[].
+     * If the filter missed them, trust the collectionId query response.
+     */
+    if (productsFromProxy.length) {
+      return sortProductsByCollectionOrder(productsFromProxy, collectionId);
     }
 
     /**
      * Fallback if the proxy does not support collectionId yet.
+     * all-products only includes collections[] (no per-collection sortOrder).
      */
     const filteredFromAllProducts = allProducts.filter((product) =>
       productIsInCollection(product, collectionId),
@@ -473,14 +477,13 @@ document.addEventListener("DOMContentLoaded", () => {
         collectionId,
       );
 
-      return filteredFromAllProducts;
+      return sortProductsByCollectionOrder(
+        filteredFromAllProducts,
+        collectionId,
+      );
     }
 
-    /**
-     * Last fallback:
-     * Trust the collectionId response if collection metadata is missing.
-     */
-    return productsFromProxy;
+    return [];
   }
 
   async function getCommerce7AvailableProducts() {
@@ -564,6 +567,15 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function productIsInCollection(product, collectionId) {
+    const collectionXproduct = product.collectionXproduct;
+
+    if (collectionXproduct) {
+      return (
+        collectionXproduct.collectionId === collectionId ||
+        collectionXproduct.collection?.id === collectionId
+      );
+    }
+
     const collections = Array.isArray(product.collections)
       ? product.collections
       : [];
@@ -580,6 +592,61 @@ document.addEventListener("DOMContentLoaded", () => {
         collection.collectionId === collectionId ||
         collection.productCollectionId === collectionId
       );
+    });
+  }
+
+  function getProductCollectionSortOrder(product, collectionId) {
+    const collectionXproduct = product.collectionXproduct;
+
+    if (
+      collectionXproduct &&
+      (collectionXproduct.collectionId === collectionId ||
+        collectionXproduct.collection?.id === collectionId) &&
+      collectionXproduct.sortOrder != null
+    ) {
+      return collectionXproduct.sortOrder;
+    }
+
+    const collections = Array.isArray(product.collections)
+      ? product.collections
+      : [];
+
+    for (const collection of collections) {
+      if (!collection || typeof collection === "string") {
+        continue;
+      }
+
+      const id =
+        collection.id ||
+        collection.collectionId ||
+        collection.productCollectionId;
+
+      if (id === collectionId && collection.sortOrder != null) {
+        return collection.sortOrder;
+      }
+    }
+
+    return null;
+  }
+
+  function sortProductsByCollectionOrder(products, collectionId) {
+    return [...products].sort((productA, productB) => {
+      const orderA = getProductCollectionSortOrder(productA, collectionId);
+      const orderB = getProductCollectionSortOrder(productB, collectionId);
+
+      if (orderA != null && orderB != null) {
+        return orderA - orderB;
+      }
+
+      if (orderA != null) {
+        return -1;
+      }
+
+      if (orderB != null) {
+        return 1;
+      }
+
+      return 0;
     });
   }
 
