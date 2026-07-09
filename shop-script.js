@@ -67,8 +67,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function customiseShopLoginButtons() {
     document
-      .querySelectorAll(".c7-product__login-message button")
+      .querySelectorAll(
+        ".c7-product__login-message button, .c7-product__login-message a, .c7-product__login-message .c7-button",
+      )
       .forEach((button) => {
+        bindShopLoginPurchaseButton(button);
+
         if (
           button.dataset.carrickLoginButtonReady === "true" &&
           button.classList.contains("c7-button") &&
@@ -95,6 +99,113 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   observeShopLoginButtons();
+
+  /* ========================================
+       SHOP LOGIN SCROLL
+       C7 injects login at the top of #c7-content
+       while the user is scrolled down — scroll up
+       when "Login to Purchase" is clicked.
+    ======================================== */
+
+  function scrollShopPageToLogin() {
+    window.scrollTo(0, 0);
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+
+    const target =
+      document.querySelector("#c7-content .c7-account-login") ||
+      document.querySelector(".c7-account-login") ||
+      document.querySelector("#c7-content") ||
+      document.querySelector("#hero, .section.hero");
+
+    if (target) {
+      target.scrollIntoView({ block: "start" });
+    }
+  }
+
+  function scheduleShopLoginScroll() {
+    scrollShopPageToLogin();
+
+    [50, 150, 350, 700, 1200, 2000].forEach((delay) => {
+      setTimeout(scrollShopPageToLogin, delay);
+    });
+  }
+
+  function isShopLoginPurchaseButton(element) {
+    if (!element) {
+      return false;
+    }
+
+    const text = (element.textContent || "").replace(/\s+/g, " ").trim().toUpperCase();
+    if (text !== "LOGIN TO PURCHASE" && text !== "LOGIN") {
+      return false;
+    }
+
+    return !!element.closest(
+      ".c7-product__login-message, .shop-product-add-to-cart, .product-detail-add-to-cart, .related-product-add-to-cart",
+    );
+  }
+
+  function bindShopLoginPurchaseButton(button) {
+    if (button.dataset.carrickLoginScrollBound === "true") {
+      return;
+    }
+
+    button.dataset.carrickLoginScrollBound = "true";
+    button.addEventListener("click", scheduleShopLoginScroll, true);
+  }
+
+  document.addEventListener(
+    "click",
+    (event) => {
+      const button =
+        event.target.closest(
+          ".c7-product__login-message button, .c7-product__login-message a, .c7-product__login-message .c7-button",
+        ) || (isShopLoginPurchaseButton(event.target) ? event.target : null);
+
+      if (!button) {
+        return;
+      }
+
+      scheduleShopLoginScroll();
+    },
+    true,
+  );
+
+  function observeShopAccountLoginScroll() {
+    let loginVisible = false;
+
+    const syncShopLoginScroll = () => {
+      if (!document.querySelector("[data-shop-section]")) {
+        return;
+      }
+
+      const login = document.querySelector(".c7-account-login");
+      const isOpen = !!login;
+
+      if (!isOpen) {
+        loginVisible = false;
+        return;
+      }
+
+      if (loginVisible) {
+        return;
+      }
+
+      loginVisible = true;
+      scheduleShopLoginScroll();
+    };
+
+    syncShopLoginScroll();
+
+    const observer = new MutationObserver(syncShopLoginScroll);
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true,
+    });
+  }
+
+  observeShopAccountLoginScroll();
 
   /* ========================================
        VIEW ALL / HIDE FUNCTIONALITY
