@@ -527,8 +527,14 @@ body:has(.c7-account-menu) #c7-content #c7-modal:empty {
 
 /* Prevent the global C7 side-cart close button from
    sitting off-screen and widening pages horizontally. */
+html,
 body {
   overflow-x: hidden !important;
+  /* Webflow/GSAP scroll interactions set transform on html/body.
+     Any transform on an ancestor re-parents position:fixed elements
+     (e.g. .header) off the viewport, so they scroll with the page. */
+  transform: none !important;
+  translate: none !important;
 }
 
 body:not(.c7-cart-open) #c7-side-cart #c7-cart__close,
