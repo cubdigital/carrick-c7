@@ -525,6 +525,22 @@ body:has(.c7-account-menu) #c7-content #c7-modal:empty {
   display: none !important;
 }
 
+/* Prevent the global C7 side-cart close button from
+   sitting off-screen and widening /profile pages. */
+body:has(.c7-account-menu),
+body:has(.c7-account-login) {
+  overflow-x: hidden !important;
+}
+
+body:has(.c7-account-menu):not(.c7-cart-open) #c7-side-cart #c7-cart__close,
+body:has(.c7-account-menu):not(.c7-cart-open) #c7-side-cart .c7-cart__close,
+body:has(.c7-account-menu):not(.c7-cart-open) #c7-side-cart [aria-label='Close cart'],
+body:has(.c7-account-login):not(.c7-cart-open) #c7-side-cart #c7-cart__close,
+body:has(.c7-account-login):not(.c7-cart-open) #c7-side-cart .c7-cart__close,
+body:has(.c7-account-login):not(.c7-cart-open) #c7-side-cart [aria-label='Close cart'] {
+  display: none !important;
+}
+
 /* ========================================
    /profile/account — C7 Your Information
    Carrick 3-column layout (view + edit)
