@@ -11,9 +11,14 @@ body:has(.c7-account-login) {
   background-color: #e7e2d6 !important;
   color: #341f24 !important;
   font-family: "Albert Sans", Arial, sans-serif !important;
+  min-height: 100vh !important;
+  min-height: 100dvh !important;
+  display: flex !important;
+  flex-direction: column !important;
 }
 
 body:has(.c7-account-login) .section._90vh {
+  flex: 1 0 auto !important;
   height: auto !important;
   min-height: 0 !important;
 }
@@ -393,6 +398,7 @@ body:has(.c7-account-login) #c7-modal:empty {
    profile sub-route, not just the dashboard.
   ======================================== */
 body:has(.c7-account-menu) .section._90vh {
+  flex: 1 0 auto !important;
   height: auto !important;
   min-height: 0 !important;
 }
@@ -415,6 +421,10 @@ body:has(.c7-account-menu) {
   background-color: #e7e2d6 !important;
   color: #341f24 !important;
   font-family: "Albert Sans", Arial, sans-serif !important;
+  min-height: 100vh !important;
+  min-height: 100dvh !important;
+  display: flex !important;
+  flex-direction: column !important;
 }
 
 body:has(.c7-account-menu) .codeembed.w-embed,
